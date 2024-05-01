@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Search Result</title>
+</head>
+<body>
+    <h1>Search Result</h1>
+    {% if whois_result %}  <!-- Check if WHOIS result exists -->
+        <h2>WHOIS Result:</h2>
+        <pre>{{ whois_result }}</pre>
+    {% else %}
+        <p>No WHOIS result available.</p>
+    {% endif %}
+    <a href="/">Back to Search</a>
+</body>
+</html>
+
+

@@ -1,13 +1,50 @@
-from flask import Flask, render_template, request, jsonify
 import logging
-import socket
 import re
+import socket
+import os
+import secrets
 import requests
+from flask import Flask, render_template, request, redirect, url_for, session
+from flask_login import LoginManager, UserMixin, login_user, logout_user, login_required, current_user
 
-app = Flask(__name__)
+
+app = Flask(__name__, template_folder='templates')
+
+app.secret_key = secrets.token_urlsafe(16)  # Generate a secure secret key
 
 # Configure logging
 logging.basicConfig(level=logging.DEBUG)
+logging.getLogger().setLevel(logging.DEBUG)
+
+# Initialize Flask-Login
+login_manager = LoginManager()
+login_manager.init_app(app)
+login_manager.login_view = 'login'
+login_manager.session_protection = "strong"
+
+# Define a User class for Flask-Login
+class User(UserMixin):
+    def __init__(self, username):
+        self.id = username
+
+    def is_authenticated(self):
+        return True
+
+    def is_active(self):
+        return True
+
+    def is_anonymous(self):
+        return False
+
+    def get_id(self):
+        return self.id
+
+# Set the current user based on the session
+@login_manager.user_loader
+def load_user(username):
+    if username == 'admin':
+        return User(username)
+    return None
 
 # Define the function to get the WHOIS server for a given domain
 def get_whois_server(domain):
@@ -87,30 +124,68 @@ def virustotal_lookup(hash_value):
         logging.error(f"Error occurred during VirusTotal lookup for hash value '{hash_value}': {str(e)}")
         return str(e)
 
-# Define the route for the index page
+# Route for the index page
 @app.route('/')
 def index():
+    if current_user.is_authenticated:
+        return redirect(url_for('index_after_login'))
+    return redirect(url_for('login'))
+
+# Route for rendering the login page
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    logging.debug("Accessed login route")
+    if request.method == 'POST':
+        username = request.form.get('username')
+        password = request.form.get('password')
+        logging.debug(f"Received login credentials: username='{username}', password='{password}'")
+        # Basic authentication, replace with secure authentication method
+        if username == 'admin' and password == 'admin':
+            logging.debug("Valid credentials, setting session")
+            user = User(username)
+            login_user(user)
+            session['username'] = username
+            return redirect(url_for('index_after_login'))
+        else:
+            error = 'Invalid username or password'
+            logging.debug("Invalid credentials")
+            return render_template('login.html', error=error)
+    # Render login page for GET request
+    logging.debug("Rendering login page")
+    return render_template('login.html')
+
+# Route for the index page after login
+@app.route('/index_after_login')
+@login_required
+def index_after_login():
+    logging.debug("Accessed index_after_login route")
     return render_template('index.html')
 
-# Define the route for the WHOIS lookup form submission
+# Route for logging out
+@app.route('/logout', methods=['GET'])  # Allow only GET requests
+@login_required
+def logout():
+    logging.debug("Accessed logout route")
+    logout_user()
+    session.pop('username', None)
+    logging.debug("User logged out, redirecting to login page")  # Updated log message
+    return redirect(url_for("login"))  # Redirect to the login page
+
+# Route for the WHOIS lookup form submission
 @app.route('/lookup', methods=['POST'])
+@login_required
 def lookup():
+    logging.debug("Accessed lookup route")
     domain = request.form.get("domain")
     if not domain:
-        return "Error: Domain field is empty", 400
+        logging.debug("Domain field is empty")
+        return render_template("error.html", error='Domain field is empty'), 400
+    # Perform WHOIS lookup
     result = whois_lookup(domain)
     parsed_result = parse_whois_result(result)
     return render_template("result.html", domain=domain, whois_result=parsed_result)
 
-# Define the route for the VirusTotal lookup form submission
-@app.route('/virustotal/lookup', methods=['POST'])
-def virustotal_lookup_route():
-    hash_value = request.form.get("hash_value")
-    if not hash_value:
-        return "Error: Hash value field is empty", 400
-    result = virustotal_lookup(hash_value)
-    return jsonify(result) if isinstance(result, dict) else result, 200 if isinstance(result, dict) else 500
-
 # Run the Flask app
 if __name__ == '__main__':
     app.run(debug=True)
+

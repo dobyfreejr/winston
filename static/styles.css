@@ -5,3 +5,23 @@ body {
     background-color: lightblue; /* Set the background color */
     font-size: 18px; /* Adjust the font size as per your preference */
 }
+
+/* Centering the search forms */
+form {
+    text-align: center;
+    margin-top: 50px; /* Adjust as needed */
+}
+
+/* Centering the form inputs */
+form input[type="text"],
+form input[type="password"] {
+    width: 300px; /* Adjust width as needed */
+    margin: 10px auto; /* Center horizontally */
+    display: block;
+}
+
+/* Centering the submit buttons */
+form button[type="submit"] {
+    margin: 10px auto; /* Center horizontally */
+    display: block;
+}

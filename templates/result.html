@@ -7,10 +7,15 @@
     <link rel="stylesheet" type="text/css" href="../static/styles.css"> <!-- Add this line -->
 </head>
 <body>
-    <h1>Search Result</h1>
+    <h1>Search Result for {{ domain }}</h1>
     {% if whois_result %}  <!-- Check if WHOIS result exists -->
         <h2>WHOIS Result:</h2>
-        <pre>{{ whois_result }}</pre>
+        <dl>
+            {% for key, value in whois_result.items() %}
+                <dt>{{ key }}</dt>
+                <dd>{{ value }}</dd>
+            {% endfor %}
+        </dl>
     {% else %}
         <p>No WHOIS result available.</p>
     {% endif %}

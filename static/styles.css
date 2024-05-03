@@ -1,3 +1,7 @@
+/* styles.css */
+
+/* Custom styling */
 body {
-    background-color:  	lightblue;
+    background-color: lightblue; /* Set the background color */
+    font-size: 18px; /* Adjust the font size as per your preference */
 }

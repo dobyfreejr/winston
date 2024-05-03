@@ -53,6 +53,16 @@ def whois_lookup(domain):
         logging.error(f"Error occurred during WHOIS lookup for domain '{domain}': {str(e)}")
         return str(e)
 
+# Define the function to parse WHOIS results
+def parse_whois_result(whois_result):
+    parsed_result = {}
+    lines = whois_result.split('\n')
+    for line in lines:
+        if ':' in line:
+            key, value = line.split(':', 1)
+            parsed_result[key.strip()] = value.strip()
+    return parsed_result
+
 # Define the function to perform a VirusTotal lookup
 def virustotal_lookup(hash_value):
     try:
@@ -81,7 +91,8 @@ def lookup():
     if not domain:
         return "Error: Domain field is empty", 400
     result = whois_lookup(domain)
-    return render_template("result.html", domain=domain, whois_result=result)
+    parsed_result = parse_whois_result(result)
+    return render_template("result.html", domain=domain, whois_result=parsed_result)
 
 # Define the route for the VirusTotal lookup form submission
 @app.route('/virustotal/lookup', methods=['POST'])
@@ -89,17 +100,9 @@ def virustotal_lookup_route():
     hash_value = request.form.get("hash_value")
     if not hash_value:
         return "Error: Hash value field is empty", 400
-    api_key = ''
-    url = f'https://www.virustotal.com/api/v3/files/{hash_value}'
-    headers = {'x-apikey': api_key}
-    response = requests.get(url, headers=headers)
-    if response.status_code == 200:
-        result = response.json()
-        return jsonify(result)  # Return the JSON response from VirusTotal
-    else:
-        return f"Error: Unable to perform VirusTotal lookup (Status code: {response.status_code})", 500
+    result = virustotal_lookup(hash_value)
+    return jsonify(result) if isinstance(result, dict) else result, 200 if isinstance(result, dict) else 500
 
 # Run the Flask app
 if __name__ == '__main__':
     app.run(debug=True)
-

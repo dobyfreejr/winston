@@ -12,9 +12,9 @@
 
     sudo apt install pip
 
-## Recent Changes
+# Recent Changes
 ### **Added styles sheet and changed results page to present infomations better.**
-## Next to fix
+# Next to fix
 ### Next is to fix the function of virus total to actually make api calls and return results
 ### Clean up the history function so past results don't show
 ### maybe put a database for the logging of past result but make admin page for it. 

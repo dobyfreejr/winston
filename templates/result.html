@@ -13,7 +13,17 @@
         <dl>
             {% for key, value in whois_result.items() %}
                 <dt>{{ key }}</dt>
-                <dd>{{ value }}</dd>
+                <dd>
+                    {% if value is iterable and value is not string %}
+                        <ul>
+                            {% for item in value %}
+                                <li>{{ item }}</li>
+                            {% endfor %}
+                        </ul>
+                    {% else %}
+                        {{ value }}
+                    {% endif %}
+                </dd>
             {% endfor %}
         </dl>
     {% else %}
@@ -22,6 +32,7 @@
     <a href="/">Back to Search</a>
 </body>
 </html>
+
 
 
 

@@ -60,7 +60,15 @@ def parse_whois_result(whois_result):
     for line in lines:
         if ':' in line:
             key, value = line.split(':', 1)
-            parsed_result[key.strip()] = value.strip()
+            key = key.strip()
+            value = value.strip()
+            if key in parsed_result:
+                if isinstance(parsed_result[key], list):
+                    parsed_result[key].append(value)
+                else:
+                    parsed_result[key] = [parsed_result[key], value]
+            else:
+                parsed_result[key] = value
     return parsed_result
 
 # Define the function to perform a VirusTotal lookup

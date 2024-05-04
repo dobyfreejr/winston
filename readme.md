@@ -17,4 +17,3 @@
 ### **Added styles sheet and changed results page to present infomations better.**
 # Next to fix
 ### Next is to fix the function of virus total to actually make api calls and return results
-### Clean up the history function so past results don't show 

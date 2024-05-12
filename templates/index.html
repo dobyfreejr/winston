@@ -13,15 +13,27 @@
         <input type="text" id="domain" name="domain"> <!-- Use 'domain' as the input name -->
         <button type="submit">Search Whois</button>
     </form>
-    <form action="/virustotal/lookup" method="post">
+    <form action="/virustotal_lookup" method="post"> <!-- Update form action to '/virustotal_lookup' -->
         <label for="hash_value">VirusTotal Hash:</label> <!-- Update label -->
         <input type="text" id="hash_value" name="hash_value"> <!-- Update name -->
         <button type="submit">Search VirusTotal</button>
+    </form>
+    <form action="/ip_lookup" method="post">
+        <label for="ip_address">Enter IP Address:</label>
+        <input type="text" id="ip_address" name="ip_address">
+        <button type="submit">Lookup</button>
     </form>
 
     <!-- Logout form -->
     <form action="/logout" method="post">
         <button type="submit">Logout</button>
     </form>
+
+    <!-- VirusTotal lookup results will be displayed here -->
+    {% if virustotal_result %}
+    <h2>VirusTotal Lookup Result</h2>
+    <p>Hash Value: {{ hash_value }}</p>
+    <p>Result: {{ virustotal_result }}</p>
+    {% endif %}
 </body>
 </html>

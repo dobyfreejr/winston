@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IP Lookup Result</title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <h1>IP Lookup Result</h1>
+    <p>IP Address: {{ ip_info["IP Address"] }}</p>
+    <p>Hostname: {{ ip_info["Hostname"] }}</p>
+    <p>City: {{ ip_info["City"] }}</p>
+    <p>Region: {{ ip_info["Region"] }}</p>
+    <p>Country: {{ ip_info["Country"] }}</p>
+    <p>Location: {{ ip_info["Location"] }}</p>
+    <p>Organization: {{ ip_info["Organization"] }}</p>
+
+    <button onclick="goBack()">Go Back</button>
+
+    <script>
+        function goBack() {
+            window.history.back();
+        }
+    </script>
+</body>
+</html>

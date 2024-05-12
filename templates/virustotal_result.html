@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VirusTotal Lookup Result</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="result-container">
+        <h1 class="result-title">VirusTotal Lookup Result for {{ hash_value }}</h1>
+        {% if result %}
+            <div class="result-item">
+                <span>Response Code:</span> {{ result['data']['attributes']['last_analysis_stats']['harmless'] }}
+            </div>
+            <div class="result-item">
+                <span>Verbose Message:</span> {{ result['data']['attributes']['last_analysis_stats']['malicious'] }}
+            </div>
+            <div class="result-item">
+                <span>Scan Date:</span> {{ result['data']['attributes']['last_analysis_date'] }}
+            </div>
+            {% if result['data']['attributes']['last_analysis_results'] %}
+                <div class="result-item">
+                    <span>Antivirus Scan Results:</span>
+                    <ul>
+                        {% for antivirus, details in result['data']['attributes']['last_analysis_results']|dictsort %}
+                            <li>
+                                <span class="av-name">{{ antivirus }}</span>
+                                <span class="av-result">{{ details['result'] }}</span>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            {% else %}
+                <div class="result-item">No antivirus scan results available.</div>
+            {% endif %}
+            <div class="result-item">
+                <span>Number of Engines:</span> {{ result['data']['attributes']['last_analysis_stats']['total'] }}
+            </div>
+        {% else %}
+            <p>No results found for the provided hash value.</p>
+        {% endif %}
+        <a href="{{ url_for('index_after_login') }}" class="back-button">Back</a>
+    </div>
+</body>
+</html>
+

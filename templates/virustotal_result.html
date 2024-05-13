@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>VirusTotal Lookup Result</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
 </head>
 <body>
     <div class="result-container">
@@ -42,6 +42,31 @@
         {% endif %}
         <a href="{{ url_for('index_after_login') }}" class="back-button">Back</a>
     </div>
+
+    <label for="inputField">Enter Field Name:</label>
+    <input type="text" id="inputField">
+    <button onclick="displayField()">Display Field</button>
+
+    <div id="json-data"></div>
+
+    <script>
+    // Your JSON response from the API
+    var jsonResponse = {{ result | tojson }};
+
+    // Function to display JSON field based on user input
+    function displayField() {
+        var inputField = document.getElementById('inputField').value;
+        var container = document.getElementById('json-data');
+        var html = '<h2>JSON Data</h2>';
+
+        if (jsonResponse && jsonResponse.hasOwnProperty('data') && jsonResponse['data']['attributes'].hasOwnProperty(inputField)) {
+            html += '<p><strong>' + inputField + ':</strong> ' + jsonResponse['data']['attributes'][inputField] + '</p>';
+        } else {
+            html += '<p>Field not found</p>';
+        }
+
+        container.innerHTML = html;
+    }
+    </script>
 </body>
 </html>
-

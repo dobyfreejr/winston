@@ -1,6 +1,5 @@
-# **_This project is under work._** 
+# **_This project is mostly complete_** 
 
-### _Goal is to make the whois and virustotal in one local instance to make it easier for doing both._ 
 
 # Mostly this is a personal project.
 
@@ -14,6 +13,5 @@
     sudo apt install pip
 
 # Recent Changes
-### **Added styles sheet and changed results page to present infomations better.**
-# Next to fix
-### Next is to fix the function of virus total to actually make api calls and return results
+### **Got virus total working. You need to just input your API key and it will produce results.**
+

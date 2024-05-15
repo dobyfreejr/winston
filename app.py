@@ -6,7 +6,7 @@ import requests
 from flask import Flask, render_template, request, redirect, url_for, session
 from flask_login import LoginManager, UserMixin, login_user, logout_user, login_required, current_user
 
-app = Flask(__name__, template_folder='templates')
+app: Flask = Flask(__name__, template_folder='templates')
 
 app.secret_key = secrets.token_urlsafe(16)  # Generate a secure secret key
 
@@ -199,7 +199,7 @@ def logout():
     logout_user()
     session.pop('username', None)
     logging.debug("User logged out, redirecting to login page")  # Updated log message
-    return redirect(url_for("login"))  # Redirect to the login page
+    return redirect(url_for("login.html"))  # Redirect to the login page
 
 
 # Route for the WHOIS lookup form submission

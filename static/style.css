@@ -1,4 +1,4 @@
-/* styles.css */
+/* style.css */
 
 /* Custom styling */
 body {
@@ -25,3 +25,16 @@ form button[type="submit"] {
     margin: 10px auto; /* Center horizontally */
     display: block;
 }
+
+/* Styling for result titles */
+.result-title {
+    font-weight: bold; /* Make titles bold */
+}
+
+/* Styling for antivirus scan results */
+.result-item.antivirus-scan {
+    font-size: 20px; /* Increase font size for antivirus scan results */
+    font-weight: bold; /* Make antivirus scan results bold */
+    text-align: center; /* Center the antivirus scan results */
+}
+

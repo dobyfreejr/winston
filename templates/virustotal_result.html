@@ -4,29 +4,70 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>VirusTotal Lookup Result</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
     <div class="result-container">
-        <h1 class="result-title">VirusTotal Lookup Result for {{ hash_value }}</h1>
-        {% if result %}
-            <div class="result-item">
-                <span>Response Code:</span> {{ result['data']['attributes']['last_analysis_stats']['harmless'] }}
+        <h1 class="result-title">VirusTotal Lookup Result for Hash Value: {{ hash_value }}</h1>
+        {% if 'error' in result %}
+            <div class="result-item">Error: {{ result['error'] }}</div>
+        {% else %}
+            <div class="result-item bold-text"> <!-- Added class for bold text -->
+                <span>Different Hash Values:</span>
             </div>
             <div class="result-item">
-                <span>Verbose Message:</span> {{ result['data']['attributes']['last_analysis_stats']['malicious'] }}
+                <span class="bold-text">MD5:</span> {{ result['data']['attributes']['md5'] }}
             </div>
             <div class="result-item">
-                <span>Scan Date:</span> {{ result['data']['attributes']['last_analysis_date'] }}
+                <span class="bold-text">SHA1:</span> {{ result['data']['attributes']['sha1'] }}
+            </div>
+            <div class="result-item">
+                <span class="bold-text">SHA256:</span> {{ result['data']['attributes']['sha256'] }}
+            </div>
+            <div class="result-item">
+                <span class="bold-text">Reputation:</span> {{ result['data']['attributes']['reputation'] }}
+            </div>
+            <div class="result-item">
+                <span class="bold-text">Total Votes:</span>
+                <ul>
+                    <li>Harmless: {{ result['data']['attributes']['total_votes']['harmless'] }}</li>
+                    <li>Malicious: {{ result['data']['attributes']['total_votes']['malicious'] }}</li>
+                </ul>
+            </div>
+            <div class="result-item">
+                <span class="bold-text">Scan Date:</span> {{ result['data']['attributes']['last_analysis_date'] }}
+            </div>
+            <div class="result-item">
+                <span class="bold-text">Number of Engines:</span> {{ result['data']['attributes']['last_analysis_stats']['total'] }}
+            </div>
+            <div class="result-item">
+                <span class="bold-text">File Type:</span> {{ result['data']['attributes']['type_description'] }}
+            </div>
+            <div class="result-item">
+                <span class="bold-text">First Submission Date:</span> {{ result['data']['attributes']['first_submission_date'] }}
+            </div>
+            <div class="result-item">
+                <span class="bold-text">Last Submission Date:</span> {{ result['data']['attributes']['last_submission_date'] }}
+            </div>
+            <div class="result-item">
+                <span class="bold-text">Size:</span> {{ result['data']['attributes']['size'] }}
+            </div>
+            <div class="result-item">
+                <span class="bold-text">Times Submitted:</span> {{ result['data']['attributes']['times_submitted'] }}
+            </div>
+            <div class="result-item">
+                <span class="bold-text">Magic:</span> {{ result['data']['attributes']['magic'] }}
+            </div>
+            <div class="result-item">
+                <span class="bold-text">Tags:</span> {{ result['data']['attributes']['tags']|join(', ') }}
             </div>
             {% if result['data']['attributes']['last_analysis_results'] %}
-                <div class="result-item">
-                    <span>Antivirus Scan Results:</span>
+                <div class="result-item"> <!-- Removed centering class -->
+                    <span class="bold-text">Antivirus Scan Results:</span> <!-- Bolded text -->
                     <ul>
                         {% for antivirus, details in result['data']['attributes']['last_analysis_results']|dictsort %}
                             <li>
-                                <span class="av-name">{{ antivirus }}</span>
-                                <span class="av-result">{{ details['result'] }}</span>
+                                <span class="av-name">{{ antivirus }}</span>: <span class="av-result">{{ details['result'] }}</span>
                             </li>
                         {% endfor %}
                     </ul>
@@ -34,39 +75,28 @@
             {% else %}
                 <div class="result-item">No antivirus scan results available.</div>
             {% endif %}
-            <div class="result-item">
-                <span>Number of Engines:</span> {{ result['data']['attributes']['last_analysis_stats']['total'] }}
-            </div>
-        {% else %}
-            <p>No results found for the provided hash value.</p>
+            {% if result['data']['attributes']['yara_rules'] %}
+                <div class="result-item">
+                    <span class="bold-text">YARA Rules:</span>
+                    <ul>
+                        {% for yara_rule in result['data']['attributes']['yara_rules'] %}
+                            <li>{{ yara_rule }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            {% endif %}
+            {% if result['data']['attributes']['snort_signatures'] %}
+                <div class="result-item">
+                    <span class="bold-text">Snort Rules:</span>
+                    <ul>
+                        {% for snort_rule in result['data']['attributes']['snort_signatures'] %}
+                            <li>{{ snort_rule }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            {% endif %}
         {% endif %}
         <a href="{{ url_for('index_after_login') }}" class="back-button">Back</a>
     </div>
-
-    <label for="inputField">Enter Field Name:</label>
-    <input type="text" id="inputField">
-    <button onclick="displayField()">Display Field</button>
-
-    <div id="json-data"></div>
-
-    <script>
-    // Your JSON response from the API
-    var jsonResponse = {{ result | tojson }};
-
-    // Function to display JSON field based on user input
-    function displayField() {
-        var inputField = document.getElementById('inputField').value;
-        var container = document.getElementById('json-data');
-        var html = '<h2>JSON Data</h2>';
-
-        if (jsonResponse && jsonResponse.hasOwnProperty('data') && jsonResponse['data']['attributes'].hasOwnProperty(inputField)) {
-            html += '<p><strong>' + inputField + ':</strong> ' + jsonResponse['data']['attributes'][inputField] + '</p>';
-        } else {
-            html += '<p>Field not found</p>';
-        }
-
-        container.innerHTML = html;
-    }
-    </script>
 </body>
 </html>

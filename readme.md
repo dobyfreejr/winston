@@ -6,9 +6,8 @@
 
 # You will need to install the follow to run.
 
-    sudo apt install python3-flask
+    pip install -r requirements.txt
 
-    sudo apt install pip
 
 # Recent Changes
 ### **Made UI changes.**

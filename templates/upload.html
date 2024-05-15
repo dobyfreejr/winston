@@ -1,0 +1,16 @@
+<!-- templates/upload.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Upload Malware Sample</title>
+</head>
+<body>
+    <h1>Upload Malware Sample</h1>
+    <form action="{{ url_for('upload_malware_sample') }}" method="post" enctype="multipart/form-data">
+        <label for="file">Choose file to upload:</label>
+        <input type="file" id="file" name="file" required>
+        <input type="submit" value="Upload">
+    </form>
+</body>
+</html>

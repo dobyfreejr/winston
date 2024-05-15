@@ -5,8 +5,10 @@ import secrets
 import requests
 from flask import Flask, render_template, request, redirect, url_for, session
 from flask_login import LoginManager, UserMixin, login_user, logout_user, login_required, current_user
+from werkzeug.utils import secure_filename
+import os
 
-app: Flask = Flask(__name__, template_folder='templates')
+app = Flask(__name__, template_folder='templates')
 
 app.secret_key = secrets.token_urlsafe(16)  # Generate a secure secret key
 
@@ -19,6 +21,12 @@ login_manager = LoginManager()
 login_manager.init_app(app)
 login_manager.login_view = 'login'
 login_manager.session_protection = "strong"
+
+# Set upload folder and allowed extensions
+UPLOAD_FOLDER = 'uploads'
+ALLOWED_EXTENSIONS = set()
+
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 
 # Define a User class for Flask-Login
@@ -151,6 +159,28 @@ def ip_lookup(ip_address):
         return None
 
 
+def allowed_file(filename):
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
+
+def upload_to_malwarebazaar(file_path):
+    try:
+        api_key = ''  # Replace with your MalwareBazaar API key
+        url = 'https://mb-api.abuse.ch/api/v1/'
+        files = {'file': open(file_path, 'rb')}
+        data = {'apikey': api_key, 'anonymous': '0'}
+        response = requests.post(url, files=files, data=data)
+
+        if response.status_code == 200:
+            result = response.json()
+            return result
+        else:
+            return f"Error: Unable to upload sample to MalwareBazaar (Status code: {response.status_code})"
+    except Exception as e:
+        logging.error(f"Error occurred during MalwareBazaar upload: {str(e)}")
+        return str(e)
+
+
 # Route for the index page
 @app.route('/')
 def index():
@@ -199,7 +229,7 @@ def logout():
     logout_user()
     session.pop('username', None)
     logging.debug("User logged out, redirecting to login page")  # Updated log message
-    return redirect(url_for("login.html"))  # Redirect to the login page
+    return redirect(url_for("login"))  # Redirect to the login page
 
 
 # Route for the WHOIS lookup form submission
@@ -249,6 +279,40 @@ def virustotal_lookup_route():
     result = virustotal_lookup(hash_value)
     return render_template("virustotal_result.html", hash_value=hash_value, result=result)
 
+
+# Route for malware sample upload
+# Update file upload route to handle any file type
+@app.route('/upload_malware_sample', methods=['GET', 'POST'])
+@login_required
+def upload_malware_sample():
+    logging.debug("Accessed upload malware sample route")
+
+    if request.method == 'POST':
+        if 'file' not in request.files:
+            logging.debug("No file part in the request")
+            return render_template("error.html", error='No file part in the request'), 400
+
+        file = request.files['file']
+
+        if file.filename == '':
+            logging.debug("No selected file")
+            return render_template("error.html", error='No selected file'), 400
+
+        if file:
+            filename = secure_filename(file.filename)
+            file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+            file.save(file_path)
+
+            # Upload to MalwareBazaar and retrieve results
+            result = upload_to_malwarebazaar(file_path)
+            os.remove(file_path)  # Remove file after uploading
+
+            return render_template("malwarebazaar_result.html", result=result)
+        else:
+            logging.debug("File type not allowed")
+            return render_template("error.html", error='File type not allowed'), 400
+
+    return render_template("upload.html")
 
 # Run the Flask app
 if __name__ == '__main__':

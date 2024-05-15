@@ -1,7 +1,5 @@
-# **_This project is mostly complete_** 
+# Made an all in one program for malware uplook. Added Virustotal and MalwareBazaar into one user friendly area. You simpily have to add your api key and go
 
-
-# Mostly this is a personal project.
 
 # Login Info
     admin:admin
@@ -13,5 +11,5 @@
     sudo apt install pip
 
 # Recent Changes
-### **Got virus total working. You need to just input your API key and it will produce results.**
-
+### **Made UI changes.**
+### **Added Malwarebazzar.Not finished**

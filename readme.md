@@ -1,4 +1,4 @@
-# Made an all in one program for malware uplook. Added Virustotal and MalwareBazaar into one user friendly area. You simpily have to add your api key and go
+# Made an all in one program for malware uplook. Added Virustotal and MalwareBazaar into one user friendly area. You simpily have to add your api keys and go
 
 
 # Login Info
@@ -10,5 +10,4 @@
 
 
 # Recent Changes
-### **Made UI changes.**
-### **Added Malwarebazzar.Not finished**
+### **Malwarebazzar is now running. Add API key and go**

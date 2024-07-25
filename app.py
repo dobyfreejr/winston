@@ -3,6 +3,8 @@ import socket
 import logging
 import secrets
 import requests
+import sys
+import json
 from flask import Flask, render_template, request, redirect, url_for, session
 from flask_login import LoginManager, UserMixin, login_user, logout_user, login_required, current_user
 from werkzeug.utils import secure_filename
@@ -24,9 +26,13 @@ login_manager.session_protection = "strong"
 
 # Set upload folder and allowed extensions
 UPLOAD_FOLDER = 'uploads'
-ALLOWED_EXTENSIONS = set()
+ALLOWED_EXTENSIONS = {'exe', 'zip', 'rar', 'tar', 'gz'}
 
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+
+# Ensure the upload folder exists
+if not os.path.exists(UPLOAD_FOLDER):
+    os.makedirs(UPLOAD_FOLDER)
 
 
 # Define a User class for Flask-Login
@@ -163,13 +169,31 @@ def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 
-def upload_to_malwarebazaar(file_path):
+def upload_to_malwarebazaar(file_path, anonymous=1, delivery_method='email_attachment', tags=None, references=None, context=None):
     try:
-        api_key = ''  # Replace with your MalwareBazaar API key
+        api_key = ''  # Replace with your API key
         url = 'https://mb-api.abuse.ch/api/v1/'
-        files = {'file': open(file_path, 'rb')}
-        data = {'apikey': api_key, 'anonymous': '0'}
-        response = requests.post(url, files=files, data=data)
+
+        headers = {'API-KEY': api_key}
+
+        # Prepare JSON data based on function parameters
+        data = {
+            'anonymous': anonymous,
+            'delivery_method': delivery_method,
+            'tags': tags if tags else [],
+            'references': references if references else {},
+            'context': context if context else {}
+        }
+
+        files = {
+            'json_data': (None, json.dumps(data), 'application/json'),
+            'file': (open(file_path, 'rb'))
+        }
+
+        response = requests.post(url, files=files, headers=headers, verify=False)
+
+        logging.debug(f"MalwareBazaar response status code: {response.status_code}")
+        logging.debug(f"MalwareBazaar response content: {response.text}")
 
         if response.status_code == 200:
             result = response.json()
@@ -179,6 +203,7 @@ def upload_to_malwarebazaar(file_path):
     except Exception as e:
         logging.error(f"Error occurred during MalwareBazaar upload: {str(e)}")
         return str(e)
+
 
 
 # Route for the index page
@@ -257,16 +282,14 @@ def ip_lookup_route():
         logging.debug("IP address field is empty")
         return render_template("error.html", error='IP address field is empty'), 400
     # Perform IP lookup
-    ip_info = ip_lookup(ip_address)
-    if ip_info:
-        return render_template("ip_result.html", ip_address=ip_address, ip_info=ip_info)
+    result = ip_lookup(ip_address)
+    if result:
+        return render_template("ip_result.html", ip_info=result)
     else:
-        error_msg = f"Failed to retrieve information for the IP address: {ip_address}"
-        logging.error(error_msg)
-        return render_template("error.html", error=error_msg), 500
+        return render_template("error.html", error='Unable to perform IP lookup'), 500
 
 
-# Route for handling VirusTotal hash lookup
+# Route for the VirusTotal lookup form submission
 @app.route('/virustotal_lookup', methods=['POST'])
 @login_required
 def virustotal_lookup_route():
@@ -277,11 +300,10 @@ def virustotal_lookup_route():
         return render_template("error.html", error='Hash value field is empty'), 400
     # Perform VirusTotal lookup
     result = virustotal_lookup(hash_value)
-    return render_template("virustotal_result.html", hash_value=hash_value, result=result)
+    return render_template("virustotal_result.html", result=result)
 
 
 # Route for malware sample upload
-# Update file upload route to handle any file type
 @app.route('/upload_malware_sample', methods=['GET', 'POST'])
 @login_required
 def upload_malware_sample():
@@ -298,9 +320,14 @@ def upload_malware_sample():
             logging.debug("No selected file")
             return render_template("error.html", error='No selected file'), 400
 
-        if file:
+        if allowed_file(file.filename):
             filename = secure_filename(file.filename)
             file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+
+            # Ensure the upload directory exists before saving the file
+            if not os.path.exists(app.config['UPLOAD_FOLDER']):
+                os.makedirs(app.config['UPLOAD_FOLDER'])
+
             file.save(file_path)
 
             # Upload to MalwareBazaar and retrieve results
@@ -314,6 +341,10 @@ def upload_malware_sample():
 
     return render_template("upload.html")
 
-# Run the Flask app
+
 if __name__ == '__main__':
+    # Ensure the upload folder exists before starting the application
+    if not os.path.exists(app.config['UPLOAD_FOLDER']):
+        os.makedirs(app.config['UPLOAD_FOLDER'])
+
     app.run(debug=True)

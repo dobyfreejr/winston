@@ -5,79 +5,156 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>VirusTotal Lookup Result</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <style>
+        /* Basic reset */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f4f4f4;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            overflow: hidden; /* Prevents page overflow */
+        }
+
+        .result-container {
+            background-color: white;
+            padding: 25px;
+            border-radius: 10px;
+            max-width: 900px;
+            width: 100%;
+            height: 90vh; /* Set the container height */
+            overflow-y: auto; /* Enable scrolling for overflow content */
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .result-title {
+            font-size: 1.6rem;
+            color: #333;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .result-item {
+            margin-bottom: 15px;
+        }
+
+        .bold-text {
+            font-weight: bold;
+            color: #0056b3;
+        }
+
+        /* Organize results in cards */
+        .result-card {
+            background-color: #f9f9f9;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+        }
+
+        ul {
+            list-style-type: disc;
+            margin-left: 20px;
+        }
+
+        li {
+            margin-bottom: 5px;
+        }
+
+        .av-name {
+            font-weight: bold;
+        }
+
+        .back-button {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: white;
+            font-size: 1rem;
+            text-decoration: none;
+            border-radius: 5px;
+            text-align: center;
+            margin-top: 20px;
+            transition: background-color 0.3s ease;
+        }
+
+        .back-button:hover {
+            background-color: #0056b3;
+        }
+
+        .result-card h3 {
+            margin-bottom: 10px;
+            color: #333;
+            font-size: 1.2rem;
+        }
+    </style>
 </head>
 <body>
     <div class="result-container">
         <h1 class="result-title">VirusTotal Lookup Result for Hash Value: {{ hash_value }}</h1>
+
         {% if 'error' in result %}
             <div class="result-item">Error: {{ result['error'] }}</div>
         {% else %}
-            <div class="result-item bold-text"> <!-- Added class for bold text -->
-                <span>Different Hash Values:</span>
+            <div class="result-card">
+                <h3>Different Hash Values</h3>
+                <p><span class="bold-text">MD5:</span> {{ result['data']['attributes']['md5'] }}</p>
+                <p><span class="bold-text">SHA1:</span> {{ result['data']['attributes']['sha1'] }}</p>
+                <p><span class="bold-text">SHA256:</span> {{ result['data']['attributes']['sha256'] }}</p>
             </div>
-            <div class="result-item">
-                <span class="bold-text">MD5:</span> {{ result['data']['attributes']['md5'] }}
-            </div>
-            <div class="result-item">
-                <span class="bold-text">SHA1:</span> {{ result['data']['attributes']['sha1'] }}
-            </div>
-            <div class="result-item">
-                <span class="bold-text">SHA256:</span> {{ result['data']['attributes']['sha256'] }}
-            </div>
-            <div class="result-item">
-                <span class="bold-text">Reputation:</span> {{ result['data']['attributes']['reputation'] }}
-            </div>
-            <div class="result-item">
-                <span class="bold-text">Total Votes:</span>
+
+            <div class="result-card">
+                <h3>Reputation & Votes</h3>
+                <p><span class="bold-text">Reputation:</span> {{ result['data']['attributes']['reputation'] }}</p>
+                <p><span class="bold-text">Total Votes:</span></p>
                 <ul>
                     <li>Harmless: {{ result['data']['attributes']['total_votes']['harmless'] }}</li>
                     <li>Malicious: {{ result['data']['attributes']['total_votes']['malicious'] }}</li>
                 </ul>
             </div>
-            <div class="result-item">
-                <span class="bold-text">Scan Date:</span> {{ result['data']['attributes']['last_analysis_date'] }}
+
+            <div class="result-card">
+                <h3>File Information</h3>
+                <p><span class="bold-text">File Type:</span> {{ result['data']['attributes']['type_description'] }}</p>
+                <p><span class="bold-text">Size:</span> {{ result['data']['attributes']['size'] }} bytes</p>
+                <p><span class="bold-text">Magic:</span> {{ result['data']['attributes']['magic'] }}</p>
             </div>
-            <div class="result-item">
-                <span class="bold-text">Number of Engines:</span> {{ result['data']['attributes']['last_analysis_stats']['total'] }}
+
+            <div class="result-card">
+                <h3>Submission & Scan Information</h3>
+                <p><span class="bold-text">First Submission Date:</span> {{ result['data']['attributes']['first_submission_date'] }}</p>
+                <p><span class="bold-text">Last Submission Date:</span> {{ result['data']['attributes']['last_submission_date'] }}</p>
+                <p><span class="bold-text">Scan Date:</span> {{ result['data']['attributes']['last_analysis_date'] }}</p>
+                <p><span class="bold-text">Number of Engines:</span> {{ result['data']['attributes']['last_analysis_stats']['total'] }}</p>
+                <p><span class="bold-text">Times Submitted:</span> {{ result['data']['attributes']['times_submitted'] }}</p>
             </div>
-            <div class="result-item">
-                <span class="bold-text">File Type:</span> {{ result['data']['attributes']['type_description'] }}
+
+            <div class="result-card">
+                <h3>Tags</h3>
+                <p><span class="bold-text">Tags:</span> {{ result['data']['attributes']['tags']|join(', ') }}</p>
             </div>
-            <div class="result-item">
-                <span class="bold-text">First Submission Date:</span> {{ result['data']['attributes']['first_submission_date'] }}
-            </div>
-            <div class="result-item">
-                <span class="bold-text">Last Submission Date:</span> {{ result['data']['attributes']['last_submission_date'] }}
-            </div>
-            <div class="result-item">
-                <span class="bold-text">Size:</span> {{ result['data']['attributes']['size'] }}
-            </div>
-            <div class="result-item">
-                <span class="bold-text">Times Submitted:</span> {{ result['data']['attributes']['times_submitted'] }}
-            </div>
-            <div class="result-item">
-                <span class="bold-text">Magic:</span> {{ result['data']['attributes']['magic'] }}
-            </div>
-            <div class="result-item">
-                <span class="bold-text">Tags:</span> {{ result['data']['attributes']['tags']|join(', ') }}
-            </div>
+
             {% if result['data']['attributes']['last_analysis_results'] %}
-                <div class="result-item"> <!-- Removed centering class -->
-                    <span class="bold-text">Antivirus Scan Results:</span> <!-- Bolded text -->
+                <div class="result-card">
+                    <h3>Antivirus Scan Results</h3>
                     <ul>
                         {% for antivirus, details in result['data']['attributes']['last_analysis_results']|dictsort %}
-                            <li>
-                                <span class="av-name">{{ antivirus }}</span>: <span class="av-result">{{ details['result'] }}</span>
-                            </li>
+                            <li><span class="av-name">{{ antivirus }}:</span> {{ details['result'] }}</li>
                         {% endfor %}
                     </ul>
                 </div>
-            {% else %}
-                <div class="result-item">No antivirus scan results available.</div>
             {% endif %}
+
             {% if result['data']['attributes']['yara_rules'] %}
-                <div class="result-item">
-                    <span class="bold-text">YARA Rules:</span>
+                <div class="result-card">
+                    <h3>YARA Rules</h3>
                     <ul>
                         {% for yara_rule in result['data']['attributes']['yara_rules'] %}
                             <li>{{ yara_rule }}</li>
@@ -85,9 +162,10 @@
                     </ul>
                 </div>
             {% endif %}
+
             {% if result['data']['attributes']['snort_signatures'] %}
-                <div class="result-item">
-                    <span class="bold-text">Snort Rules:</span>
+                <div class="result-card">
+                    <h3>Snort Rules</h3>
                     <ul>
                         {% for snort_rule in result['data']['attributes']['snort_signatures'] %}
                             <li>{{ snort_rule }}</li>
@@ -96,6 +174,7 @@
                 </div>
             {% endif %}
         {% endif %}
+
         <a href="{{ url_for('index_after_login') }}" class="back-button">Back</a>
     </div>
 </body>

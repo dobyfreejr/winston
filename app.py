@@ -1,14 +1,14 @@
-import re
-import socket
-import logging
-import secrets
-import requests
-import sys
 import json
+import logging
+import os
+import re
+import secrets
+import socket
+
+import requests
 from flask import Flask, render_template, request, redirect, url_for, session
 from flask_login import LoginManager, UserMixin, login_user, logout_user, login_required, current_user
 from werkzeug.utils import secure_filename
-import os
 
 app = Flask(__name__, template_folder='templates')
 

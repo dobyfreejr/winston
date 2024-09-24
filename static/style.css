@@ -1,40 +1,171 @@
-/* style.css */
-
-/* Custom styling */
+/* General Body Styling */
 body {
-    background-color: lightblue; /* Set the background color */
-    font-size: 18px; /* Adjust the font size as per your preference */
+    background: linear-gradient(to bottom right, #f0f8ff, #e0ffff); /* Subtle gradient background */
+    font-family: 'Roboto', sans-serif; /* Modern font */
+    font-size: 18px; /* Base font size */
+    color: #333; /* Text color */
+    margin: 0;
+    padding: 0;
 }
 
-/* Centering the search forms */
+/* Centering the form */
 form {
+    background-color: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1); /* Subtle shadow for a lifted look */
+    padding: 20px;
+    max-width: 400px;
+    margin: 50px auto; /* Center form on page */
     text-align: center;
-    margin-top: 50px; /* Adjust as needed */
 }
 
-/* Centering the form inputs */
+/* Input Fields */
 form input[type="text"],
 form input[type="password"] {
-    width: 300px; /* Adjust width as needed */
-    margin: 10px auto; /* Center horizontally */
-    display: block;
+    width: 100%; /* Full width */
+    padding: 10px;
+    margin: 10px 0;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 16px;
 }
 
-/* Centering the submit buttons */
+/* Submit Button */
 form button[type="submit"] {
-    margin: 10px auto; /* Center horizontally */
-    display: block;
+    background-color: #007bff; /* Primary button color */
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s ease;
 }
 
-/* Styling for result titles */
+form button[type="submit"]:hover {
+    background-color: #0056b3; /* Darker shade on hover */
+}
+
+/* Titles and Headings */
 .result-title {
-    font-weight: bold; /* Make titles bold */
+    font-weight: bold;
+    color: #007bff; /* Matching title color */
+    font-size: 22px;
+    margin-top: 20px;
 }
 
-/* Styling for antivirus scan results */
+/* Antivirus scan result styling */
 .result-item.antivirus-scan {
-    font-size: 20px; /* Increase font size for antivirus scan results */
-    font-weight: bold; /* Make antivirus scan results bold */
-    text-align: center; /* Center the antivirus scan results */
+    font-size: 18px;
+    font-weight: bold;
+    text-align: center;
+    color: #28a745; /* Green to indicate success */
 }
 
+/* Container for centering the content */
+.container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+}
+
+/* Additional button styling for cancel/reset buttons */
+form button[type="reset"],
+form button[type="cancel"] {
+    background-color: #6c757d;
+    color: white;
+    padding: 10px 20px;
+    margin-left: 10px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+form button[type="reset"]:hover,
+form button[type="cancel"]:hover {
+    background-color: #5a6268;
+}
+
+/* Responsive Design */
+@media (max-width: 600px) {
+    form {
+        width: 90%;
+    }
+
+    form input[type="text"],
+    form input[type="password"] {
+        width: 100%; /* Full width for small screens */
+    }
+}
+/* General Body Styling */
+body {
+    background-color: #f0f8ff;
+    font-family: 'Roboto', sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+}
+
+/* Login Container */
+.login-container {
+    background-color: #fff;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    max-width: 400px;
+    width: 100%;
+    text-align: center;
+}
+
+/* Form Styling */
+.login-form label {
+    font-size: 16px;
+    display: block;
+    text-align: left;
+    margin: 10px 0 5px;
+}
+
+.login-form input[type="text"],
+.login-form input[type="password"] {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 20px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 16px;
+}
+
+/* Button Styling */
+.login-btn {
+    background-color: #007bff;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s ease;
+}
+
+.login-btn:hover {
+    background-color: #0056b3;
+}
+
+/* Error Message Styling */
+.error-message {
+    color: red;
+    margin-top: 15px;
+}
+
+/* Responsive Design */
+@media (max-width: 600px) {
+    .login-container {
+        padding: 20px;
+        width: 90%;
+    }
+}

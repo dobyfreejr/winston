@@ -3,62 +3,196 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Search</title>
-    <link rel="stylesheet" type="text/css" href="../static/style.css"> <!-- Add this line -->
+    <title>Winston - Your Handy Assistant</title>
+    <link rel="stylesheet" type="text/css" href="../static/style.css">
     <style>
-        /* Center align forms */
-        form {
+        /* Basic reset */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        /* Body Styling */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f3f4f6;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        /* Main Container for all forms */
+        .container {
+            max-width: 1200px;
+            width: 100%;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin: 40px 0;
+        }
+
+        /* Individual Form Card */
+        .card {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+        }
+
+        /* Form Title */
+        h1 {
+            font-size: 2.5rem;
+            color: #333;
             text-align: center;
             margin-bottom: 20px;
         }
-        /* Center align main title */
-        h1 {
+
+        .card h2 {
+            font-size: 1.5rem;
+            color: #007bff;
             text-align: center;
+            margin-bottom: 20px;
+        }
+
+        /* Label Styling */
+        label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #555;
+        }
+
+        /* Input Field Styling */
+        input[type="text"], input[type="file"] {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            font-size: 1rem;
+            transition: border-color 0.3s ease;
+        }
+
+        input[type="text"]:focus, input[type="file"]:focus {
+            border-color: #007bff;
+        }
+
+        /* Button Styling */
+        button {
+            width: 100%;
+            padding: 12px;
+            background-color: #007bff;
+            color: white;
+            font-size: 1rem;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        /* Results Section */
+        .results {
+            margin-top: 40px;
+            text-align: center;
+        }
+
+        .results h2 {
+            color: #444;
+            margin-bottom: 20px;
+        }
+
+        .results p {
+            font-size: 1.1rem;
+            color: #555;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2rem;
+            }
         }
     </style>
 </head>
 <body>
-    <h1>Winston Your Handy Assistant</h1>
-    <form action="/virustotal_lookup" method="post"> <!-- Update form action to '/virustotal_lookup' -->
-        <label for="hash_value">VirusTotal Hash:</label> <!-- Update label -->
-        <input type="text" id="hash_value" name="hash_value"> <!-- Update name -->
-        <button type="submit">Search VirusTotal</button>
-    </form>
 
-    <form action="/ip_lookup" method="post">
-        <label for="ip_address">Enter IP Address:</label>
-        <input type="text" id="ip_address" name="ip_address">
-        <button type="submit">Lookup</button>
-    </form>
+    <h1>Winston - Your Handy Assistant</h1>
 
-    <form action="/lookup" method="post"> <!-- Update the form action to '/lookup' -->
-        <label for="domain">Enter Domain:</label> <!-- Use 'domain' as the input name -->
-        <input type="text" id="domain" name="domain"> <!-- Use 'domain' as the input name -->
-        <button type="submit">Search Whois</button>
-    </form>
+    <div class="container">
+        <!-- VirusTotal Hash Search Card -->
+        <div class="card">
+            <h2>VirusTotal Hash Lookup</h2>
+            <form action="/virustotal_lookup" method="post">
+                <label for="hash_value">Enter Hash Value:</label>
+                <input type="text" id="hash_value" name="hash_value" placeholder="Enter hash value">
+                <button type="submit">Search VirusTotal</button>
+            </form>
+        </div>
 
-    <form action="/upload_malware_sample" method="post" enctype="multipart/form-data">
-        <label for="file">Choose a file:</label>
-        <input type="file" id="file" name="file" accept=".exe, .dll, .bin" required>
-        <button type="submit">Upload to MalwareBazaar</button>
-    </form>
+        <!-- IP Lookup Card -->
+        <div class="card">
+            <h2>IP Lookup</h2>
+            <form action="/ip_lookup" method="post">
+                <label for="ip_address">Enter IP Address:</label>
+                <input type="text" id="ip_address" name="ip_address" placeholder="Enter IP address">
+                <button type="submit">Lookup IP</button>
+            </form>
+        </div>
 
-    <!-- Logout form -->
-    <form action="/logout" method="post">
-        <button type="submit">Logout</button>
-    </form>
+        <!-- Domain Lookup Card -->
+        <div class="card">
+            <h2>Domain Lookup</h2>
+            <form action="/lookup" method="post">
+                <label for="domain">Enter Domain:</label>
+                <input type="text" id="domain" name="domain" placeholder="Enter domain name">
+                <button type="submit">Search Whois</button>
+            </form>
+        </div>
 
-    <!-- VirusTotal lookup results will be displayed here -->
-    {% if virustotal_result %}
-    <h2>VirusTotal Lookup Result</h2>
-    <p>Hash Value: {{ hash_value }}</p>
-    <p>Result: {{ virustotal_result }}</p>
-    {% endif %}
+        <!-- Malware Upload Card -->
+        <div class="card">
+            <h2>Malware Sample Upload</h2>
+            <form action="/upload_malware_sample" method="post" enctype="multipart/form-data">
+                <label for="file">Upload Malware Sample:</label>
+                <input type="file" id="file" name="file" accept=".exe, .dll, .bin" required>
+                <button type="submit">Upload to MalwareBazaar</button>
+            </form>
+        </div>
 
-    <!-- MalwareBazaar upload result will be displayed here -->
-    {% if malwarebazaar_result %}
-    <h2>MalwareBazaar Upload Result</h2>
-    <p>{{ malwarebazaar_result }}</p>
-    {% endif %}
+        <!-- Logout Card -->
+        <div class="card">
+            <h2>Logout</h2>
+            <form action="/logout" method="post">
+                <button type="submit">Logout</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Results Section -->
+    <div class="results">
+        {% if virustotal_result %}
+        <h2>VirusTotal Lookup Result</h2>
+        <p><strong>Hash Value:</strong> {{ hash_value }}</p>
+        <p><strong>Result:</strong> {{ virustotal_result }}</p>
+        {% endif %}
+
+        {% if malwarebazaar_result %}
+        <h2>MalwareBazaar Upload Result</h2>
+        <p>{{ malwarebazaar_result }}</p>
+        {% endif %}
+    </div>
+
 </body>
 </html>

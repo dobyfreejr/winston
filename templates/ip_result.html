@@ -5,18 +5,100 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>IP Lookup Result</title>
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}">
+    <style>
+        /* Basic reset */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        /* Body styling */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f4f6f8;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        /* Container for the IP lookup result */
+        .ip-result-container {
+            background-color: #ffffff;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            max-width: 600px;
+            width: 100%;
+        }
+
+        /* Title Styling */
+        h1 {
+            text-align: center;
+            color: #333;
+            font-size: 2rem;
+            margin-bottom: 20px;
+        }
+
+        /* Information List Styling */
+        .ip-info-list {
+            list-style-type: none;
+            padding: 0;
+            margin-bottom: 30px;
+        }
+
+        .ip-info-list li {
+            font-size: 1.1rem;
+            padding: 10px 0;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .ip-info-list li:last-child {
+            border-bottom: none;
+        }
+
+        .ip-info-list span {
+            font-weight: bold;
+            color: #007bff;
+        }
+
+        /* Go Back Button Styling */
+        button {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: white;
+            font-size: 1rem;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            width: 100%;
+            text-align: center;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+    </style>
 </head>
 <body>
-    <h1>IP Lookup Result</h1>
-    <p>IP Address: {{ ip_info["IP Address"] }}</p>
-    <p>Hostname: {{ ip_info["Hostname"] }}</p>
-    <p>City: {{ ip_info["City"] }}</p>
-    <p>Region: {{ ip_info["Region"] }}</p>
-    <p>Country: {{ ip_info["Country"] }}</p>
-    <p>Location: {{ ip_info["Location"] }}</p>
-    <p>Organization: {{ ip_info["Organization"] }}</p>
 
-    <button onclick="goBack()">Go Back</button>
+    <div class="ip-result-container">
+        <h1>IP Lookup Result</h1>
+        <ul class="ip-info-list">
+            <li><span>IP Address:</span> {{ ip_info["IP Address"] }}</li>
+            <li><span>Hostname:</span> {{ ip_info["Hostname"] }}</li>
+            <li><span>City:</span> {{ ip_info["City"] }}</li>
+            <li><span>Region:</span> {{ ip_info["Region"] }}</li>
+            <li><span>Country:</span> {{ ip_info["Country"] }}</li>
+            <li><span>Location:</span> {{ ip_info["Location"] }}</li>
+            <li><span>Organization:</span> {{ ip_info["Organization"] }}</li>
+        </ul>
+        <button onclick="goBack()">Go Back</button>
+    </div>
 
     <script>
         function goBack() {

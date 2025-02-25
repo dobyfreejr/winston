@@ -72,15 +72,4 @@ python app.py
 ## ⭐ Support & Feedback  
 
 💬 **Found a bug? Have suggestions?** Open an issue or contribute on GitHub!  
-🎯 **If you like this project, don't forget to star ⭐ the repo!**  
-
----
-
-🔗 **Additional Resources**  
-📘 [README Best Practices](https://github.com/jehna/readme-best-practices)  
-🚀 [Awesome README Examples](https://github.com/matiassingers/awesome-readme)  
-📝 [Best README Template](https://github.com/othneildrew/Best-README-Template)  
-
----
-
-🔥 **Now your `README.md` is engaging, fun, and informative!** 🚀 Let me know if you want any more tweaks! 😃
+🎯 **If you like this project, don't forget to star ⭐ the repo!**

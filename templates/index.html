@@ -17,11 +17,19 @@
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background-color: #f3f4f6;
+            color: #333;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
             padding: 20px;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        /* Dark Mode Styles */
+        body.dark-mode {
+            background-color: #1c1c1c;
+            color: #f3f4f6;
         }
 
         /* Main Container for all forms */
@@ -40,7 +48,11 @@
             padding: 20px;
             border-radius: 10px;
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-            transition: transform 0.3s ease;
+            transition: transform 0.3s ease, background-color 0.3s ease;
+        }
+
+        .card.dark-mode {
+            background-color: #2a2a2a;
         }
 
         .card:hover {
@@ -50,7 +62,6 @@
         /* Form Title */
         h1 {
             font-size: 2.5rem;
-            color: #333;
             text-align: center;
             margin-bottom: 20px;
         }
@@ -67,7 +78,6 @@
             display: block;
             font-weight: bold;
             margin-bottom: 10px;
-            color: #555;
         }
 
         /* Input Field Styling */
@@ -109,13 +119,11 @@
         }
 
         .results h2 {
-            color: #444;
             margin-bottom: 20px;
         }
 
         .results p {
             font-size: 1.1rem;
-            color: #555;
         }
 
         /* Responsive Design */
@@ -129,6 +137,7 @@
 <body>
 
     <h1>Winston - Your Handy Assistant</h1>
+    <button id="themeToggle" style="margin-bottom: 20px;">Toggle Dark Mode</button>
 
     <div class="container">
         <!-- VirusTotal Hash Search Card -->
@@ -193,6 +202,15 @@
         <p>{{ malwarebazaar_result }}</p>
         {% endif %}
     </div>
+
+    <script>
+        const themeToggle = document.getElementById('themeToggle');
+        themeToggle.addEventListener('click', () => {
+            document.body.classList.toggle('dark-mode');
+            const cards = document.querySelectorAll('.card');
+            cards.forEach(card => card.classList.toggle('dark-mode'));
+        });
+    </script>
 
 </body>
 </html>

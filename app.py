@@ -168,7 +168,6 @@ def ip_lookup(ip_address):
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
-
 def upload_to_malwarebazaar(file_path, anonymous=1, delivery_method='email_attachment', tags=None, references=None, context=None):
     try:
         api_key = ''  # Replace with your API key
@@ -203,8 +202,6 @@ def upload_to_malwarebazaar(file_path, anonymous=1, delivery_method='email_attac
     except Exception as e:
         logging.error(f"Error occurred during MalwareBazaar upload: {str(e)}")
         return str(e)
-
-
 
 # Route for the index page
 @app.route('/')
@@ -286,13 +283,33 @@ def ip_lookup_route():
     if result:
         return render_template("ip_result.html", ip_info=result)
     else:
-        return render_template("error.html", error='Unable to perform IP lookup'), 500
+        logging.debug("Unable to fetch IP information")
+        return render_template("error.html", error='Unable to fetch IP information'), 400
+
+
+# Route for the file upload
+@app.route('/upload', methods=['GET', 'POST'])
+@login_required
+def upload():
+    if request.method == 'POST':
+        if 'file' not in request.files:
+            return 'No file part', 400
+        file = request.files['file']
+        if file.filename == '':
+            return 'No selected file', 400
+        if file and allowed_file(file.filename):
+            filename = secure_filename(file.filename)
+            file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+            file.save(file_path)
+            logging.debug(f"File saved: {file_path}")
+            return 'File uploaded successfully', 200
+    return render_template('upload.html')
 
 
 # Route for the VirusTotal lookup form submission
 @app.route('/virustotal_lookup', methods=['POST'])
 @login_required
-def virustotal_lookup_route():
+def virustotal_route():
     logging.debug("Accessed VirusTotal lookup route")
     hash_value = request.form.get("hash_value")
     if not hash_value:
@@ -300,51 +317,32 @@ def virustotal_lookup_route():
         return render_template("error.html", error='Hash value field is empty'), 400
     # Perform VirusTotal lookup
     result = virustotal_lookup(hash_value)
-    return render_template("virustotal_result.html", result=result)
+    return render_template("virustotal_result.html", hash_value=hash_value, result=result)
 
 
-# Route for malware sample upload
-@app.route('/upload_malware_sample', methods=['GET', 'POST'])
+# Route for uploading to MalwareBazaar
+@app.route('/upload_to_malwarebazaar', methods=['POST'])
 @login_required
-def upload_malware_sample():
-    logging.debug("Accessed upload malware sample route")
+def upload_to_malwarebazaar_route():
+    file = request.files['file']
+    if file and allowed_file(file.filename):
+        filename = secure_filename(file.filename)
+        file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+        file.save(file_path)
+        logging.debug(f"File saved: {file_path}")
 
-    if request.method == 'POST':
-        if 'file' not in request.files:
-            logging.debug("No file part in the request")
-            return render_template("error.html", error='No file part in the request'), 400
+        # Prepare parameters for MalwareBazaar upload
+        anonymous = request.form.get('anonymous', '1')  # Default to anonymous
+        delivery_method = request.form.get('delivery_method', 'email_attachment')
+        tags = request.form.getlist('tags')
+        references = request.form.get('references')
+        context = request.form.get('context')
 
-        file = request.files['file']
-
-        if file.filename == '':
-            logging.debug("No selected file")
-            return render_template("error.html", error='No selected file'), 400
-
-        if allowed_file(file.filename):
-            filename = secure_filename(file.filename)
-            file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
-
-            # Ensure the upload directory exists before saving the file
-            if not os.path.exists(app.config['UPLOAD_FOLDER']):
-                os.makedirs(app.config['UPLOAD_FOLDER'])
-
-            file.save(file_path)
-
-            # Upload to MalwareBazaar and retrieve results
-            result = upload_to_malwarebazaar(file_path)
-            os.remove(file_path)  # Remove file after uploading
-
-            return render_template("malwarebazaar_result.html", result=result)
-        else:
-            logging.debug("File type not allowed")
-            return render_template("error.html", error='File type not allowed'), 400
-
-    return render_template("upload.html")
+        # Call the upload function
+        response = upload_to_malwarebazaar(file_path, anonymous, delivery_method, tags, references, context)
+        return render_template("upload_result.html", response=response)
+    return render_template("error.html", error='Invalid file'), 400
 
 
 if __name__ == '__main__':
-    # Ensure the upload folder exists before starting the application
-    if not os.path.exists(app.config['UPLOAD_FOLDER']):
-        os.makedirs(app.config['UPLOAD_FOLDER'])
-
-    app.run(debug=True)
+    app.run(debug=True)  # Change debug to False in production

@@ -8,6 +8,38 @@ body {
     padding: 0;
 }
 
+/* Dark Mode Styles */
+body.dark-mode {
+    background: linear-gradient(to bottom right, #2c3e50, #34495e); /* Dark gradient background */
+    color: #ecf0f1; /* Light text color */
+}
+
+body.dark-mode form {
+    background-color: #34495e; /* Darker form background */
+    color: #ecf0f1; /* Light text color for form */
+}
+
+body.dark-mode form input[type="text"],
+body.dark-mode form input[type="password"] {
+    border: 1px solid #7f8c8d; /* Lighter border for inputs */
+}
+
+body.dark-mode form button[type="submit"] {
+    background-color: #2980b9; /* Darker button color */
+}
+
+body.dark-mode form button[type="submit"]:hover {
+    background-color: #1f6399; /* Darker shade on hover */
+}
+
+body.dark-mode .result-title {
+    color: #3498db; /* Brighter title color */
+}
+
+body.dark-mode .result-item.antivirus-scan {
+    color: #2ecc71; /* Bright green for success */
+}
+
 /* Centering the form */
 form {
     background-color: #ffffff;
@@ -100,6 +132,7 @@ form button[type="cancel"]:hover {
         width: 100%; /* Full width for small screens */
     }
 }
+
 /* General Body Styling */
 body {
     background-color: #f0f8ff;
@@ -122,6 +155,11 @@ body {
     text-align: center;
 }
 
+/* Dark Mode for Login Container */
+body.dark-mode .login-container {
+    background-color: #2c3e50; /* Darker login background */
+}
+
 /* Form Styling */
 .login-form label {
     font-size: 16px;
@@ -140,6 +178,12 @@ body {
     font-size: 16px;
 }
 
+/* Dark Mode for Input Fields */
+body.dark-mode .login-form input[type="text"],
+body.dark-mode .login-form input[type="password"] {
+    border: 1px solid #7f8c8d; /* Lighter border for dark mode */
+}
+
 /* Button Styling */
 .login-btn {
     background-color: #007bff;
@@ -152,8 +196,18 @@ body {
     transition: background-color 0.3s ease;
 }
 
+/* Dark Mode for Button */
+body.dark-mode .login-btn {
+    background-color: #2980b9; /* Darker button color */
+}
+
 .login-btn:hover {
     background-color: #0056b3;
+}
+
+/* Dark Mode for Button Hover */
+body.dark-mode .login-btn:hover {
+    background-color: #1f6399; /* Darker shade on hover */
 }
 
 /* Error Message Styling */
@@ -168,4 +222,55 @@ body {
         padding: 20px;
         width: 90%;
     }
+}
+
+/* Common Button Styles */
+.btn {
+    width: 100%;
+    padding: 12px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s ease;
+}
+
+/* Primary Button Styles */
+form button[type="submit"],
+.login-btn {
+    background-color: #007bff; /* Primary button color */
+    color: white;
+}
+
+form button[type="submit"]:hover,
+.login-btn:hover {
+    background-color: #0056b3; /* Darker shade on hover */
+}
+
+/* Secondary Button Styles */
+form button[type="reset"],
+form button[type="cancel"],
+.btn-secondary {
+    background-color: #6c757d; /* Gray color for reset */
+    color: white;
+}
+
+form button[type="reset"]:hover,
+form button[type="cancel"]:hover,
+.btn-secondary:hover {
+    background-color: #5a6268; /* Darker shade on hover */
+}
+
+/* Dark Mode for Primary Button */
+body.dark-mode .btn-primary {
+    background-color: #2980b9; /* Darker button color */
+}
+
+body.dark-mode .btn-primary:hover {
+    background-color: #1f6399; /* Darker shade on hover */
+}
+
+/* Dark Mode for Error Message */
+body.dark-mode .error-message {
+    color: red; /* Maintain error color in dark mode */
 }

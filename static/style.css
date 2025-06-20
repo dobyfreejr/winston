@@ -1,276 +1,487 @@
-/* General Body Styling */
-body {
-    background: linear-gradient(to bottom right, #f0f8ff, #e0ffff); /* Subtle gradient background */
-    font-family: 'Roboto', sans-serif; /* Modern font */
-    font-size: 18px; /* Base font size */
-    color: #333; /* Text color */
-    margin: 0;
-    padding: 0;
+/* ===== RESET & BASE STYLES ===== */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
 
-/* Dark Mode Styles */
+:root {
+  --bg: #f5f7fa;
+  --text: #2c3e50;
+  --card-bg: #ffffff;
+  --btn-bg: #1e90ff;
+  --btn-hover: #0f6cd1;
+  --border: #dcdde1;
+  --error: #e74c3c;
+  --success: #28a745;
+  --title: #1e90ff;
+  --neutral: #95a5a6;
+}
+
 body.dark-mode {
-    background: linear-gradient(to bottom right, #2c3e50, #34495e); /* Dark gradient background */
-    color: #ecf0f1; /* Light text color */
+  --bg: #12141d;
+  --text: #ecf0f1;
+  --card-bg: #1e1f2a;
+  --btn-bg: #3498db;
+  --btn-hover: #2980b9;
+  --border: #3b3b3b;
 }
 
-body.dark-mode form {
-    background-color: #34495e; /* Darker form background */
-    color: #ecf0f1; /* Light text color for form */
-}
-
-body.dark-mode form input[type="text"],
-body.dark-mode form input[type="password"] {
-    border: 1px solid #7f8c8d; /* Lighter border for inputs */
-}
-
-body.dark-mode form button[type="submit"] {
-    background-color: #2980b9; /* Darker button color */
-}
-
-body.dark-mode form button[type="submit"]:hover {
-    background-color: #1f6399; /* Darker shade on hover */
-}
-
-body.dark-mode .result-title {
-    color: #3498db; /* Brighter title color */
-}
-
-body.dark-mode .result-item.antivirus-scan {
-    color: #2ecc71; /* Bright green for success */
-}
-
-/* Centering the form */
-form {
-    background-color: #ffffff;
-    border-radius: 8px;
-    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1); /* Subtle shadow for a lifted look */
-    padding: 20px;
-    max-width: 400px;
-    margin: 50px auto; /* Center form on page */
-    text-align: center;
-}
-
-/* Input Fields */
-form input[type="text"],
-form input[type="password"] {
-    width: 100%; /* Full width */
-    padding: 10px;
-    margin: 10px 0;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    font-size: 16px;
-}
-
-/* Submit Button */
-form button[type="submit"] {
-    background-color: #007bff; /* Primary button color */
-    color: white;
-    padding: 10px 20px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 16px;
-    transition: background-color 0.3s ease;
-}
-
-form button[type="submit"]:hover {
-    background-color: #0056b3; /* Darker shade on hover */
-}
-
-/* Titles and Headings */
-.result-title {
-    font-weight: bold;
-    color: #007bff; /* Matching title color */
-    font-size: 22px;
-    margin-top: 20px;
-}
-
-/* Antivirus scan result styling */
-.result-item.antivirus-scan {
-    font-size: 18px;
-    font-weight: bold;
-    text-align: center;
-    color: #28a745; /* Green to indicate success */
-}
-
-/* Container for centering the content */
-.container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    min-height: 100vh;
-}
-
-/* Additional button styling for cancel/reset buttons */
-form button[type="reset"],
-form button[type="cancel"] {
-    background-color: #6c757d;
-    color: white;
-    padding: 10px 20px;
-    margin-left: 10px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 16px;
-}
-
-form button[type="reset"]:hover,
-form button[type="cancel"]:hover {
-    background-color: #5a6268;
-}
-
-/* Responsive Design */
-@media (max-width: 600px) {
-    form {
-        width: 90%;
-    }
-
-    form input[type="text"],
-    form input[type="password"] {
-        width: 100%; /* Full width for small screens */
-    }
-}
-
-/* General Body Styling */
 body {
-    background-color: #f0f8ff;
-    font-family: 'Roboto', sans-serif;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-    margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Roboto', sans-serif;
+  font-size: 18px;
+  min-height: 100vh;
+  margin: 0;
+  padding: 0 20px 40px;
 }
 
-/* Login Container */
-.login-container {
-    background-color: #fff;
-    padding: 30px;
-    border-radius: 10px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    max-width: 400px;
-    width: 100%;
-    text-align: center;
+/* ===== INDEX PAGE ===== */
+.index-page .container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 20px;
+  max-width: 1200px;
+  margin: 40px auto;
 }
 
-/* Dark Mode for Login Container */
-body.dark-mode .login-container {
-    background-color: #2c3e50; /* Darker login background */
+.index-page .card {
+  background-color: var(--card-bg);
+  padding: 20px;
+  border-radius: 10px;
+  text-align: center;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
 }
 
-/* Form Styling */
-.login-form label {
-    font-size: 16px;
-    display: block;
-    text-align: left;
-    margin: 10px 0 5px;
+.index-page .card h2 {
+  color: var(--title);
+  margin-bottom: 10px;
 }
 
-.login-form input[type="text"],
-.login-form input[type="password"] {
-    width: 100%;
-    padding: 10px;
-    margin-bottom: 20px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    font-size: 16px;
+.index-page .description {
+  font-size: 0.95rem;
+  color: var(--text);
+  margin-bottom: 15px;
 }
 
-/* Dark Mode for Input Fields */
-body.dark-mode .login-form input[type="text"],
-body.dark-mode .login-form input[type="password"] {
-    border: 1px solid #7f8c8d; /* Lighter border for dark mode */
+.index-page .icon {
+  font-size: 2rem;
+  color: var(--btn-bg);
+  margin-bottom: 10px;
 }
 
-/* Button Styling */
+/* ===== VIRUSTOTAL PAGE ===== */
+.virustotal-page .result-container {
+  max-width: 1200px;
+  margin: 60px auto 0;
+  padding: 30px;
+  background-color: var(--card-bg);
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.virustotal-page .result-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  justify-content: center;
+}
+
+.virustotal-page .result-card {
+  flex: 1 1 300px;
+  max-width: 400px;
+  background-color: var(--card-bg);
+  border-radius: 10px;
+  padding: 20px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.virustotal-page .copy-line {
+  display: flex;
+  align-items: center;
+  background-color: var(--border);
+  padding: 8px;
+  border-radius: 6px;
+  margin: 5px 0 10px;
+  overflow-x: auto;
+  white-space: nowrap;
+  gap: 10px;
+}
+
+.virustotal-page .copy-line span {
+  flex: 1;
+  font-family: monospace;
+  word-break: break-word;
+  font-size: 0.9rem;
+  cursor: pointer;
+}
+
+.virustotal-page .copy-line button {
+  background: none;
+  border: none;
+  font-size: 1rem;
+  cursor: pointer;
+  color: var(--btn-bg);
+}
+
+.virustotal-page .filter-box {
+  text-align: center;
+  margin: 20px 0;
+}
+
+.virustotal-page .filter-box input {
+  padding: 10px;
+  width: 60%;
+  max-width: 400px;
+  font-size: 16px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background-color: var(--card-bg);
+  color: var(--text);
+}
+
+/* ===== AV RESULT GRID ===== */
+.virustotal-page .av-result-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+  padding: 10px 0;
+  list-style: none;
+}
+
+.virustotal-page .av-result-grid li {
+  display: flex;
+  justify-content: space-between;
+  padding: 8px 12px;
+  border-radius: 6px;
+  background-color: var(--card-bg);
+  font-size: 0.9rem;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
+}
+
+/* ===== COLLAPSIBLE BAR ===== */
+.virustotal-page .collapsible {
+  cursor: pointer;
+  user-select: none;
+  font-weight: bold;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 12px 0;
+  font-size: 1.1rem;
+  color: var(--title);
+  border-bottom: 1px solid var(--border);
+  background-color: transparent;
+}
+
+.virustotal-page .collapsible::after {
+  content: '▼';
+  margin-left: 8px;
+  font-size: 0.9rem;
+}
+
+.virustotal-page .collapsible.active::after {
+  content: '▲';
+}
+
+.virustotal-page .content {
+  display: none;
+  margin-top: 10px;
+}
+
+.virustotal-page .content.active {
+  display: block;
+}
+
+/* ===== STATUS COLORS ===== */
+.status-clean {
+  color: var(--success);
+}
+.status-malicious {
+  color: var(--error);
+}
+.status-undetected {
+  color: var(--neutral);
+}
+
+/* ===== BADGES ===== */
+.badge {
+  display: inline-block;
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  background-color: var(--border);
+  color: white;
+  margin: 0 5px 5px 0;
+}
+
+.badge-low {
+  background-color: var(--success);
+}
+.badge-medium {
+  background-color: orange;
+}
+.badge-high {
+  background-color: var(--error);
+}
+.badge-neutral {
+  background-color: gray;
+}
+
+/* ===== TITLES ===== */
+h1 {
+  font-size: 2.5rem;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.result-title {
+  font-weight: bold;
+  color: var(--title);
+  font-size: 22px;
+  margin-top: 20px;
+  text-align: center;
+}
+
+/* ===== BUTTONS ===== */
+button,
+.btn,
 .login-btn {
-    background-color: #007bff;
-    color: white;
-    padding: 10px 20px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 16px;
-    transition: background-color 0.3s ease;
+  background-color: var(--btn-bg);
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: background-color 0.3s ease;
+  margin-top: 10px;
+  width: auto;
 }
 
-/* Dark Mode for Button */
-body.dark-mode .login-btn {
-    background-color: #2980b9; /* Darker button color */
-}
-
+button:hover,
+.btn:hover,
 .login-btn:hover {
-    background-color: #0056b3;
+  background-color: var(--btn-hover);
 }
 
-/* Dark Mode for Button Hover */
-body.dark-mode .login-btn:hover {
-    background-color: #1f6399; /* Darker shade on hover */
+.theme-toggle {
+  position: fixed;
+  top: 10px;
+  right: 20px;
+  background-color: var(--btn-bg);
+  color: #fff;
+  padding: 8px 16px;
+  font-size: 14px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  z-index: 1000;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  transition: background-color 0.3s ease;
 }
 
-/* Error Message Styling */
-.error-message {
-    color: red;
-    margin-top: 15px;
+.theme-toggle:hover {
+  background-color: var(--btn-hover);
 }
 
-/* Responsive Design */
+/* ===== RESPONSIVENESS ===== */
+@media (max-width: 1024px) {
+  .virustotal-page .av-result-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
 @media (max-width: 600px) {
-    .login-container {
-        padding: 20px;
-        width: 90%;
-    }
+  .virustotal-page .result-container {
+    padding: 20px;
+  }
+
+  .virustotal-page .result-card {
+    max-width: 100%;
+  }
+
+  .virustotal-page .copy-line {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .virustotal-page .filter-box input {
+    width: 90%;
+  }
+
+  .theme-toggle {
+    top: 10px;
+    right: 10px;
+  }
+
+  .virustotal-page .av-result-grid {
+    grid-template-columns: 1fr;
+  }
+}
+/* ===== IP LOOKUP PAGE ===== */
+.ip-lookup-page {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
 }
 
-/* Common Button Styles */
-.btn {
-    width: 100%;
-    padding: 12px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 16px;
-    transition: background-color 0.3s ease;
+.result-container {
+  text-align: center;
+  background: var(--card-bg, #fff);
+  padding: 2rem;
+  border-radius: 12px;
+  box-shadow: 0 0 10px rgba(0,0,0,0.15);
 }
 
-/* Primary Button Styles */
-form button[type="submit"],
-.login-btn {
-    background-color: #007bff; /* Primary button color */
-    color: white;
+
+.ip-info-list {
+  list-style: none;
+  padding: 0;
+  margin-bottom: 30px;
 }
 
-form button[type="submit"]:hover,
-.login-btn:hover {
-    background-color: #0056b3; /* Darker shade on hover */
+.ip-info-list li {
+  font-size: 1rem;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--border);
 }
 
-/* Secondary Button Styles */
-form button[type="reset"],
-form button[type="cancel"],
-.btn-secondary {
-    background-color: #6c757d; /* Gray color for reset */
-    color: white;
+.ip-info-list li:last-child {
+  border-bottom: none;
 }
 
-form button[type="reset"]:hover,
-form button[type="cancel"]:hover,
-.btn-secondary:hover {
-    background-color: #5a6268; /* Darker shade on hover */
+.ip-info-list .label {
+  font-weight: bold;
+  color: var(--title);
+}
+/* ===== WHOIS PAGE ===== */
+.whois-page .result-container {
+  max-width: 900px;
+  margin: 60px auto;
+  padding: 30px;
+  background-color: var(--card-bg);
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  overflow-y: auto;
 }
 
-/* Dark Mode for Primary Button */
-body.dark-mode .btn-primary {
-    background-color: #2980b9; /* Darker button color */
+.whois-page .result-title {
+  text-align: center;
+  color: var(--title);
+  font-size: 1.8rem;
+  margin-bottom: 20px;
 }
 
-body.dark-mode .btn-primary:hover {
-    background-color: #1f6399; /* Darker shade on hover */
+.whois-page .result-card {
+  padding: 20px;
+  background-color: var(--card-bg);
+  border-radius: 10px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
 }
 
-/* Dark Mode for Error Message */
-body.dark-mode .error-message {
-    color: red; /* Maintain error color in dark mode */
+.whois-page .whois-data {
+  margin: 0;
+}
+
+.whois-page dt {
+  font-weight: bold;
+  color: var(--title);
+  margin-top: 12px;
+}
+
+.whois-page dd {
+  margin-left: 20px;
+  color: var(--text);
+  margin-bottom: 10px;
+}
+
+.whois-page ul {
+  padding-left: 20px;
+  margin: 5px 0;
+}
+
+.back-button-container {
+  text-align: center;
+  margin-top: 30px;
+}
+.sortable-ghost {
+  opacity: 0.4;
+}
+
+.drag-handle {
+  user-select: none;
+  font-size: 1.2rem;
+  color: var(--neutral);
+}
+.result-card {
+  background-color: var(--card-bg);
+  border-radius: 10px;
+  padding: 20px;
+  margin-bottom: 20px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  transition: box-shadow 0.3s ease;
+}
+.badge {
+  padding: 4px 10px;
+  border-radius: 6px;
+  color: #fff;
+  font-weight: bold;
+}
+
+.badge-low {
+  background-color: #2ecc71; /* green */
+}
+
+.badge-medium {
+  background-color: #f1c40f; /* yellow */
+}
+
+.badge-high {
+  background-color: #e74c3c; /* red */
+}
+.whois-results-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  justify-content: center;
+}
+
+.result-card.whois-card {
+  background: var(--card-bg, #1e1e2f);
+  border-radius: 10px;
+  padding: 1rem 1.5rem;
+  box-shadow: 0 0 8px rgba(0, 0, 0, 0.2);
+  max-width: 400px;
+  flex: 1 1 300px;
+}
+
+.whois-key {
+  margin: 0;
+  font-weight: bold;
+  font-size: 1rem;
+  padding-bottom: 0.3rem;
+}
+
+.whois-value ul {
+  padding-left: 1.2rem;
+  margin: 0;
+}
+
+.whois-value li {
+  list-style-type: disc;
+}
+
+.highlight-dns {
+  color: #3498db;
+}
+
+.highlight-status {
+  color: #f1c40f;
+}
+
+.highlight-registrar {
+  color: #9b59b6;
 }

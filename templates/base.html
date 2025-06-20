@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>{% block title %}Winston - Your Handy Assistant{% endblock %}</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
+
+  {% block extra_styles %}{% endblock %}
+</head>
+<script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
+
+<body class="index-page">
+
+  <!-- Optional: Theme toggle only shown on main page -->
+  {% block theme_toggle %}
+  {% endblock %}
+
+  <!-- Main content injected here -->
+  {% block content %}
+  {% endblock %}
+
+  <!-- Shared footer (timestamp) -->
+  <div class="timestamp" id="timestamp"></div>
+
+  <!-- Dark Mode + Timestamp Script -->
+  <script>
+    // Apply saved theme
+    if (localStorage.getItem('theme') === 'dark') {
+      document.body.classList.add('dark-mode');
+    }
+
+    // Show timestamp
+    document.getElementById('timestamp').innerText = 'Current Time: ' + new Date().toLocaleString();
+  </script>
+
+  {% block scripts %}{% endblock %}
+</body>
+</html>

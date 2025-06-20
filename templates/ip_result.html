@@ -1,109 +1,50 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>IP Lookup Result</title>
-    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}">
-    <style>
-        /* Basic reset */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+{% extends "base.html" %}
+{% set body_class = "ip-lookup-page" %}
 
-        /* Body styling */
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #f4f6f8;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
-        }
+{% block title %}IP Lookup Result{% endblock %}
 
-        /* Container for the IP lookup result */
-        .ip-result-container {
-            background-color: #ffffff;
-            padding: 30px;
-            border-radius: 10px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-            max-width: 600px;
-            width: 100%;
-        }
+{% block theme_toggle %}
+<button class="theme-toggle" onclick="toggleTheme()">Toggle Theme</button>
+{% endblock %}
 
-        /* Title Styling */
-        h1 {
-            text-align: center;
-            color: #333;
-            font-size: 2rem;
-            margin-bottom: 20px;
-        }
+{% block content %}
+<div class="result-container">
+  <h1 class="result-title">🔍 IP Lookup Result</h1>
 
-        /* Information List Styling */
-        .ip-info-list {
-            list-style-type: none;
-            padding: 0;
-            margin-bottom: 30px;
-        }
+  <h2 class="section-title">🌐 IP Info</h2>
+  <ul class="ip-info-list">
+    {% for label, value in ip_info.items() %}
+      <li><span class="label">{{ label }}:</span> {{ value }}</li>
+    {% endfor %}
+  </ul>
 
-        .ip-info-list li {
-            font-size: 1.1rem;
-            padding: 10px 0;
-            border-bottom: 1px solid #e0e0e0;
-        }
+  {% if abuse_info %}
+  <h2 class="section-title">⚠️ AbuseIPDB Enrichment</h2>
+  <ul class="ip-info-list">
+    <li>
+      <span class="label">Abuse Score:</span>
+      <span class="badge {{
+        'badge-low' if abuse_info.abuseConfidenceScore < 25 else
+        'badge-medium' if abuse_info.abuseConfidenceScore < 70 else
+        'badge-high' }}">
+        {{ abuse_info.abuseConfidenceScore }} / 100
+      </span>
+    </li>
+    <li><span class="label">Total Reports:</span> {{ abuse_info.totalReports }}</li>
+    <li><span class="label">ISP:</span> {{ abuse_info.isp }}</li>
+    <li><span class="label">Usage Type:</span> {{ abuse_info.usageType }}</li>
+    <li><span class="label">Domain:</span> {{ abuse_info.domain }}</li>
+    <li><span class="label">Country:</span> {{ abuse_info.countryCode }}</li>
+    <li><span class="label">Last Reported:</span> {{ abuse_info.lastReportedAt }}</li>
+  </ul>
+  {% endif %}
 
-        .ip-info-list li:last-child {
-            border-bottom: none;
-        }
+  <a href="{{ url_for('index_after_login') }}" class="btn">⬅ Go Back</a>
+</div>
+{% endblock %}
 
-        .ip-info-list span {
-            font-weight: bold;
-            color: #007bff;
-        }
-
-        /* Go Back Button Styling */
-        button {
-            display: inline-block;
-            padding: 10px 20px;
-            background-color: #007bff;
-            color: white;
-            font-size: 1rem;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
-            width: 100%;
-            text-align: center;
-        }
-
-        button:hover {
-            background-color: #0056b3;
-        }
-    </style>
-</head>
-<body>
-
-    <div class="ip-result-container">
-        <h1>IP Lookup Result</h1>
-        <ul class="ip-info-list">
-            <li><span>IP Address:</span> {{ ip_info["IP Address"] }}</li>
-            <li><span>Hostname:</span> {{ ip_info["Hostname"] }}</li>
-            <li><span>City:</span> {{ ip_info["City"] }}</li>
-            <li><span>Region:</span> {{ ip_info["Region"] }}</li>
-            <li><span>Country:</span> {{ ip_info["Country"] }}</li>
-            <li><span>Location:</span> {{ ip_info["Location"] }}</li>
-            <li><span>Organization:</span> {{ ip_info["Organization"] }}</li>
-        </ul>
-        <button onclick="goBack()">Go Back</button>
-    </div>
-
-    <script>
-        function goBack() {
-            window.history.back();
-        }
-    </script>
-</body>
-</html>
+{% block scripts %}
+<script>
+  // Optional: Add any page-specific JS here
+</script>
+{% endblock %}

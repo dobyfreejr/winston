@@ -1,137 +1,55 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Search Result</title>
-    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}">
-    <style>
-        /* Basic Reset */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+{% extends "base.html" %}
 
-        /* Body Styling */
-        body {
-            font-family: 'Arial', sans-serif;
-            background-color: #f8f9fa;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            padding: 20px;
-        }
+{% block title %}WHOIS Lookup Result{% endblock %}
 
-        /* Main Container for Search Results */
-        .result-container {
-            background-color: #ffffff;
-            padding: 30px;
-            border-radius: 10px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-            max-width: 800px;
-            width: 100%;
-            max-height: 80vh;  /* Limit height to 80% of viewport height */
-            overflow-y: auto;   /* Enable vertical scrolling */
-        }
+{% block theme_toggle %}
+  <button class="theme-toggle" id="themeToggle">Toggle Dark Mode</button>
+{% endblock %}
 
-        /* Title Styling */
-        h1 {
-            text-align: center;
-            color: #333;
-            margin-bottom: 20px;
-            font-size: 1.8rem;
-        }
+{% block content %}
+<div class="result-container">
+  <h1 class="result-title">📡 WHOIS Lookup Result for:<br><span>{{ domain }}</span></h1>
 
-        /* WHOIS Results Section */
-        h2 {
-            color: #007bff;
-            margin-bottom: 15px;
-        }
-
-        /* Definition List Styling */
-        dl {
-            font-size: 1rem;
-            margin-bottom: 20px;
-        }
-
-        dt {
-            font-weight: bold;
-            color: #555;
-            margin-top: 10px;
-        }
-
-        dd {
-            margin-left: 20px;
-            color: #333;
-            margin-bottom: 10px;
-        }
-
-        /* Styling for nested lists (arrays in WHOIS data) */
-        ul {
-            list-style-type: disc;
-            padding-left: 40px;
-            margin-top: 5px;
-        }
-
-        li {
-            margin-bottom: 5px;
-        }
-
-        /* Back to Search Button */
-        .back-button {
-            display: inline-block;
-            padding: 10px 20px;
-            background-color: #007bff;
-            color: white;
-            font-size: 1rem;
-            text-decoration: none;
-            border-radius: 5px;
-            transition: background-color 0.3s ease;
-        }
-
-        .back-button:hover {
-            background-color: #0056b3;
-        }
-
-        /* Center the button */
-        .back-button-container {
-            text-align: center;
-            margin-top: 20px;
-        }
-    </style>
-</head>
-<body>
-
-    <div class="result-container">
-        <h1>Search Result for {{ domain }}</h1>
-
-        {% if whois_result %}
-            <h2>WHOIS Result:</h2>
-            <dl>
-                {% for key, value in whois_result.items() %}
-                    <dt>{{ key }}</dt>
-                    <dd>
-                        {% if value is iterable and value is not string %}
-                            <ul>
-                                {% for item in value %}
-                                    <li>{{ item }}</li>
-                                {% endfor %}
-                            </ul>
-                        {% else %}
-                            {{ value }}
-                        {% endif %}
-                    </dd>
+  {% if whois_result %}
+    <div class="whois-results-grid">
+      {% for key, value in whois_result.items() %}
+        {% set key_lower = key|lower %}
+        <div class="result-card whois-card">
+          <h3 class="whois-key
+              {% if 'name server' in key_lower %}highlight-dns{%
+              elif 'status' in key_lower %}highlight-status{%
+              elif 'registrar' in key_lower %}highlight-registrar{% endif %}">
+            {{ key }}
+          </h3>
+          <div class="whois-value">
+            {% if value is iterable and value is not string %}
+              <ul>
+                {% for item in value %}
+                  <li>{{ item }}</li>
                 {% endfor %}
-            </dl>
-        {% else %}
-            <p>No WHOIS result available.</p>
-        {% endif %}
+              </ul>
+            {% else %}
+              <p>{{ value }}</p>
+            {% endif %}
+          </div>
+        </div>
+      {% endfor %}
     </div>
+  {% else %}
+    <p class="error-message">⚠️ No WHOIS result available.</p>
+  {% endif %}
 
-    <div class="back-button-container">
-        <a href="/" class="back-button">Back to Search</a>
-    </div>
+  <div class="back-button-container">
+    <a href="{{ url_for('index_after_login') }}" class="btn">⬅ Back to Search</a>
+  </div>
+</div>
+{% endblock %}
 
-</body>
-</html>
+{% block scripts %}
+<script>
+  document.getElementById('themeToggle')?.addEventListener('click', () => {
+    document.body.classList.toggle('dark-mode');
+    localStorage.setItem('theme', document.body.classList.contains('dark-mode') ? 'dark' : 'light');
+  });
+</script>
+{% endblock %}

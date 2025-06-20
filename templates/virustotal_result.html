@@ -1,181 +1,340 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>VirusTotal Lookup Result</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-    <style>
-        /* Basic reset */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+{% extends "base.html" %}
+{% set body_class = "virustotal-page" %}
 
-        body {
-            font-family: 'Arial', sans-serif;
-            background-color: #f4f4f4;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            overflow: hidden; /* Prevents page overflow */
-        }
+{% block content %}
+<div class="result-container">
+  <h1 class="result-title">🔍 VirusTotal Lookup for<br><span>{{ hash_value }}</span></h1>
 
-        .result-container {
-            background-color: white;
-            padding: 25px;
-            border-radius: 10px;
-            max-width: 900px;
-            width: 100%;
-            height: 90vh; /* Set the container height */
-            overflow-y: auto; /* Enable scrolling for overflow content */
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-        }
-
-        .result-title {
-            font-size: 1.6rem;
-            color: #333;
-            margin-bottom: 20px;
-            text-align: center;
-        }
-
-        .result-item {
-            margin-bottom: 15px;
-        }
-
-        .bold-text {
-            font-weight: bold;
-            color: #0056b3;
-        }
-
-        /* Organize results in cards */
-        .result-card {
-            background-color: #f9f9f9;
-            padding: 15px;
-            border-radius: 8px;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-            margin-bottom: 20px;
-        }
-
-        ul {
-            list-style-type: disc;
-            margin-left: 20px;
-        }
-
-        li {
-            margin-bottom: 5px;
-        }
-
-        .av-name {
-            font-weight: bold;
-        }
-
-        .back-button {
-            display: inline-block;
-            padding: 10px 20px;
-            background-color: #007bff;
-            color: white;
-            font-size: 1rem;
-            text-decoration: none;
-            border-radius: 5px;
-            text-align: center;
-            margin-top: 20px;
-            transition: background-color 0.3s ease;
-        }
-
-        .back-button:hover {
-            background-color: #0056b3;
-        }
-
-        .result-card h3 {
-            margin-bottom: 10px;
-            color: #333;
-            font-size: 1.2rem;
-        }
-    </style>
-</head>
-<body>
-    <div class="result-container">
-        <h1 class="result-title">VirusTotal Lookup Result for Hash Value: {{ hash_value }}</h1>
-
-        {% if 'error' in result %}
-            <div class="result-item">Error: {{ result['error'] }}</div>
-        {% else %}
-            <div class="result-card">
-                <h3>Different Hash Values</h3>
-                <p><span class="bold-text">MD5:</span> {{ result['data']['attributes']['md5'] }}</p>
-                <p><span class="bold-text">SHA1:</span> {{ result['data']['attributes']['sha1'] }}</p>
-                <p><span class="bold-text">SHA256:</span> {{ result['data']['attributes']['sha256'] }}</p>
-            </div>
-
-            <div class="result-card">
-                <h3>Reputation & Votes</h3>
-                <p><span class="bold-text">Reputation:</span> {{ result['data']['attributes']['reputation'] }}</p>
-                <p><span class="bold-text">Total Votes:</span></p>
-                <ul>
-                    <li>Harmless: {{ result['data']['attributes']['total_votes']['harmless'] }}</li>
-                    <li>Malicious: {{ result['data']['attributes']['total_votes']['malicious'] }}</li>
-                </ul>
-            </div>
-
-            <div class="result-card">
-                <h3>File Information</h3>
-                <p><span class="bold-text">File Type:</span> {{ result['data']['attributes']['type_description'] }}</p>
-                <p><span class="bold-text">Size:</span> {{ result['data']['attributes']['size'] }} bytes</p>
-                <p><span class="bold-text">Magic:</span> {{ result['data']['attributes']['magic'] }}</p>
-            </div>
-
-            <div class="result-card">
-                <h3>Submission & Scan Information</h3>
-                <p><span class="bold-text">First Submission Date:</span> {{ result['data']['attributes']['first_submission_date'] }}</p>
-                <p><span class="bold-text">Last Submission Date:</span> {{ result['data']['attributes']['last_submission_date'] }}</p>
-                <p><span class="bold-text">Scan Date:</span> {{ result['data']['attributes']['last_analysis_date'] }}</p>
-                <p><span class="bold-text">Number of Engines:</span> {{ result['data']['attributes']['last_analysis_stats']['total'] }}</p>
-                <p><span class="bold-text">Times Submitted:</span> {{ result['data']['attributes']['times_submitted'] }}</p>
-            </div>
-
-            <div class="result-card">
-                <h3>Tags</h3>
-                <p><span class="bold-text">Tags:</span> {{ result['data']['attributes']['tags']|join(', ') }}</p>
-            </div>
-
-            {% if result['data']['attributes']['last_analysis_results'] %}
-                <div class="result-card">
-                    <h3>Antivirus Scan Results</h3>
-                    <ul>
-                        {% for antivirus, details in result['data']['attributes']['last_analysis_results']|dictsort %}
-                            <li><span class="av-name">{{ antivirus }}:</span> {{ details['result'] }}</li>
-                        {% endfor %}
-                    </ul>
-                </div>
-            {% endif %}
-
-            {% if result['data']['attributes']['yara_rules'] %}
-                <div class="result-card">
-                    <h3>YARA Rules</h3>
-                    <ul>
-                        {% for yara_rule in result['data']['attributes']['yara_rules'] %}
-                            <li>{{ yara_rule }}</li>
-                        {% endfor %}
-                    </ul>
-                </div>
-            {% endif %}
-
-            {% if result['data']['attributes']['snort_signatures'] %}
-                <div class="result-card">
-                    <h3>Snort Rules</h3>
-                    <ul>
-                        {% for snort_rule in result['data']['attributes']['snort_signatures'] %}
-                            <li>{{ snort_rule }}</li>
-                        {% endfor %}
-                    </ul>
-                </div>
-            {% endif %}
-        {% endif %}
-
-        <a href="{{ url_for('index_after_login') }}" class="back-button">Back</a>
+  {% if 'error' in result %}
+    <div class="result-card error">
+      <p>Error: {{ result['error'] }}</p>
     </div>
-</body>
-</html>
+  {% else %}
+  <div id="sortable-modules" class="result-grid">
+
+ <!-- Bar Chart -->
+<div class="result-card">
+  <div class="drag-handle collapsible-toggle" onclick="toggleSection(this)">☰ 📊 Threat Risk Overview</div>
+  <div class="collapsible-content">
+    <div style="max-width: 500px; height: 250px;">
+      <canvas id="riskChart"></canvas>
+    </div>
+  </div>
+</div>
+
+    <!-- File Info -->
+    <div class="result-card">
+      <div class="drag-handle collapsible-toggle" onclick="toggleSection(this)">☰ 📄 File Information</div>
+      <div class="collapsible-content">
+        <p><strong>Type:</strong> {{ result['file']['data']['attributes']['type_description'] }}</p>
+        <p><strong>Size:</strong> {{ result['file']['data']['attributes']['size'] }} bytes</p>
+        <p><strong>Magic:</strong> {{ result['file']['data']['attributes']['magic'] }}</p>
+        <p><strong>First Submission:</strong> {{ result['file']['data']['attributes']['first_submission_date'] }}</p>
+        <p><strong>Last Submission:</strong> {{ result['file']['data']['attributes']['last_submission_date'] }}</p>
+        <p><strong>Scan Date:</strong> {{ result['file']['data']['attributes']['last_analysis_date'] }}</p>
+        <p><strong>Engines:</strong> {{ result['file']['data']['attributes']['last_analysis_stats']['total'] }}</p>
+        <p><strong>Times Submitted:</strong> {{ result['file']['data']['attributes']['times_submitted'] }}</p>
+      </div>
+    </div>
+
+    <!-- Hashes -->
+    <div class="result-card">
+      <div class="drag-handle collapsible-toggle" onclick="toggleSection(this)">☰ 🧬 Hashes</div>
+      <div class="collapsible-content">
+        {% for key in ['md5', 'sha1', 'sha256'] %}
+          <div><strong>{{ key.upper() }}:</strong></div>
+          <div class="copy-line">
+            <span onclick="copyToClipboard(this.innerText)">{{ result['file']['data']['attributes'][key] }}</span>
+            <button title="Copy" onclick="copyToClipboard('{{ result['file']['data']['attributes'][key] }}')">📋</button>
+          </div>
+        {% endfor %}
+      </div>
+    </div>
+
+    <!-- Votes -->
+    <div class="result-card">
+      <div class="drag-handle collapsible-toggle" onclick="toggleSection(this)">☰ 🛡️ Reputation & Votes</div>
+      <div class="collapsible-content">
+        {% set malicious = result['file']['data']['attributes']['total_votes']['malicious'] %}
+        {% set risk_class = 'badge-low' if malicious < 3 else 'badge-medium' if malicious < 10 else 'badge-high' %}
+        <p><span class="badge {{ risk_class }}">Malicious Votes: {{ malicious }}</span></p>
+        <p><strong>Harmless:</strong> {{ result['file']['data']['attributes']['total_votes']['harmless'] }}</p>
+      </div>
+    </div>
+
+    <!-- Tags -->
+    {% if result['file']['data']['attributes']['tags'] %}
+    <div class="result-card">
+      <div class="drag-handle collapsible-toggle" onclick="toggleSection(this)">☰ 🏷️ Tags</div>
+      <div class="collapsible-content">
+        {% for tag in result['file']['data']['attributes']['tags'] %}
+          <span class="badge">{{ tag }}</span>
+        {% endfor %}
+      </div>
+    </div>
+    {% endif %}
+
+    <!-- Threat Classification -->
+    {% if result['file']['data']['attributes']['popular_threat_classification'] %}
+    <div class="result-card">
+      <div class="drag-handle collapsible-toggle" onclick="toggleSection(this)">☰ 🚨 Threat Classification</div>
+      <div class="collapsible-content">
+        {% set threat = result['file']['data']['attributes']['popular_threat_classification'] %}
+        <p><strong>Suggested Label:</strong> {{ threat['suggested_threat_label'] }}</p>
+        {% if threat['popular_threat_category'] is mapping %}
+          <ul>
+            {% for category, values in threat['popular_threat_category'].items() %}
+              <li><strong>{{ category.capitalize() }}</strong>: {{ values | join(', ') }}</li>
+            {% endfor %}
+          </ul>
+        {% else %}
+          <p>No structured threat categories available.</p>
+        {% endif %}
+      </div>
+    </div>
+    {% endif %}
+
+    <!-- Antivirus Scan Results -->
+    {% if result['file']['data']['attributes']['last_analysis_results'] %}
+    <div class="result-card">
+      <div class="drag-handle collapsible-toggle" onclick="toggleSection(this)">☰ 🧪 Antivirus Scan Results</div>
+      <div class="collapsible-content">
+        <div class="filter-box">
+          <input type="text" id="avFilter" placeholder="Type antivirus name...">
+        </div>
+        <ul id="avResults" class="av-result-grid">
+          {% for antivirus, details in result['file']['data']['attributes']['last_analysis_results']|dictsort %}
+            {% set status_class = 'status-undetected' %}
+            {% if details['result'] == 'malicious' %}
+              {% set status_class = 'status-malicious' %}
+            {% elif details['result'] == 'clean' %}
+              {% set status_class = 'status-clean' %}
+            {% endif %}
+            <li><span class="av-name">{{ antivirus }}</span><span class="{{ status_class }}">{{ details['result'] }}</span></li>
+          {% endfor %}
+        </ul>
+      </div>
+    </div>
+    {% endif %}
+
+    <!-- YARA Rules -->
+    {% if result['file']['data']['attributes']['crowdsourced_yara_results'] %}
+    <div class="result-card">
+      <div class="drag-handle collapsible-toggle" onclick="toggleSection(this)">☰ 📜 YARA Rules</div>
+      <div class="collapsible-content">
+        <ul>
+          {% for match in result['file']['data']['attributes']['crowdsourced_yara_results'] %}
+          <li><strong>{{ match['rule_name'] }}</strong> by {{ match['author'] }}<br><em>{{ match['description'] }}</em></li>
+          {% endfor %}
+        </ul>
+      </div>
+    </div>
+    {% endif %}
+
+    <!-- Sigma Rules -->
+    {% if result['file']['data']['attributes']['crowdsourced_sigma_results'] %}
+    <div class="result-card">
+      <div class="drag-handle collapsible-toggle" onclick="toggleSection(this)">☰ 📊 Sigma Rules</div>
+      <div class="collapsible-content">
+        <ul>
+          {% for match in result['file']['data']['attributes']['crowdsourced_sigma_results'] %}
+          <li><strong>{{ match['rule_title'] }}</strong> by {{ match['author'] }}<br><em>{{ match['description'] }}</em></li>
+          {% endfor %}
+        </ul>
+      </div>
+    </div>
+    {% endif %}
+
+    <!-- DNS -->
+    {% if result['file']['data']['attributes']['network_dns'] %}
+    <div class="result-card">
+      <div class="drag-handle collapsible-toggle" onclick="toggleSection(this)">☰ 🌐 DNS Resolutions</div>
+      <div class="collapsible-content">
+        <ul>
+          {% for entry in result['file']['data']['attributes']['network_dns'] %}
+          <li>{{ entry['hostname'] }}</li>
+          {% endfor %}
+        </ul>
+      </div>
+    </div>
+    {% endif %}
+
+    <!-- Contacted IPs -->
+    {% if result['ips'] and result['ips']['data'] %}
+    <div class="result-card">
+      <div class="drag-handle collapsible-toggle" onclick="toggleSection(this)">☰ 🌐 Contacted IPs</div>
+      <div class="collapsible-content">
+        <ul>
+          {% for ip in result['ips']['data'] %}
+            <li>{{ ip['id'] }}</li>
+          {% endfor %}
+        </ul>
+      </div>
+    </div>
+    {% endif %}
+
+    <!-- Contacted URLs -->
+    {% if result['urls'] and result['urls']['data'] %}
+    <div class="result-card">
+      <div class="drag-handle collapsible-toggle" onclick="toggleSection(this)">☰ 🌐 Contacted URLs</div>
+      <div class="collapsible-content">
+        <ul>
+          {% for url in result['urls']['data'] %}
+          <li>{{ url['id'] }}</li>
+          {% endfor %}
+        </ul>
+      </div>
+    </div>
+    {% endif %}
+
+    <!-- Sandbox Verdicts -->
+    {% if result['sandbox_verdicts'] and result['sandbox_verdicts']['data'] %}
+    <div class="result-card">
+      <div class="drag-handle collapsible-toggle" onclick="toggleSection(this)">☰ 🧪 Sandbox Verdicts</div>
+      <div class="collapsible-content">
+        <ul>
+          {% for verdict in result['sandbox_verdicts']['data'] %}
+            <li><strong>{{ verdict['attributes']['sandbox_name'] }}</strong>: {{ verdict['attributes']['verdict'] }}</li>
+          {% endfor %}
+        </ul>
+      </div>
+    </div>
+    {% endif %}
+
+    <!-- Community Comments -->
+    {% if result['comments'] and result['comments']['data'] %}
+    <div class="result-card">
+      <div class="drag-handle collapsible-toggle" onclick="toggleSection(this)">☰ 💬 Community Comments</div>
+      <div class="collapsible-content">
+        <ul>
+          {% for comment in result['comments']['data'] %}
+            <li>{{ comment['attributes']['text'] }}</li>
+          {% endfor %}
+        </ul>
+      </div>
+    </div>
+    {% endif %}
+
+    <!-- Behavior -->
+    {% if result['behavior'] and result['behavior']['data'] %}
+    <div class="result-card">
+      <div class="drag-handle collapsible-toggle" onclick="toggleSection(this)">☰ 🧠 Behavior Summary</div>
+      <div class="collapsible-content">
+        <pre>{{ result['behavior']['data'] | tojson(indent=2) }}</pre>
+      </div>
+    </div>
+    {% endif %}
+
+  </div>
+
+  <div class="back-button-container">
+    <a href="{{ url_for('index_after_login') }}" class="btn">⬅ Back</a>
+  </div>
+</div>
+{% endif %}
+{% endblock %}
+
+{% block scripts %}
+<script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+  // Sortable
+  new Sortable(document.getElementById('sortable-modules'), {
+    animation: 150,
+    handle: '.drag-handle',
+    ghostClass: 'sortable-ghost'
+  });
+
+  // Copy function
+  function copyToClipboard(text) {
+    navigator.clipboard.writeText(text);
+    const toast = document.createElement('div');
+    toast.textContent = 'Copied to clipboard';
+    toast.style.position = 'fixed';
+    toast.style.bottom = '20px';
+    toast.style.left = '50%';
+    toast.style.transform = 'translateX(-50%)';
+    toast.style.background = '#333';
+    toast.style.color = '#fff';
+    toast.style.padding = '10px 20px';
+    toast.style.borderRadius = '5px';
+    toast.style.opacity = '0.9';
+    document.body.appendChild(toast);
+    setTimeout(() => toast.remove(), 2000);
+  }
+
+  // AV Filter
+  document.getElementById("avFilter")?.addEventListener("keyup", function () {
+    const filter = this.value.toLowerCase();
+    document.querySelectorAll("#avResults li").forEach(li => {
+      const name = li.querySelector(".av-name").textContent.toLowerCase();
+      li.style.display = name.includes(filter) ? "" : "none";
+    });
+  });
+
+  // Collapse toggle with chart draw trigger
+  let chartInitialized = false;
+  function toggleSection(header) {
+    header.classList.toggle('active');
+    const content = header.nextElementSibling;
+    const wasHidden = content.style.display === 'none' || !content.style.display;
+    content.style.display = wasHidden ? 'block' : 'none';
+
+    // Render chart only when the section becomes visible
+    if (wasHidden && header.textContent.includes("Threat Risk Overview") && !chartInitialized) {
+      drawChart();
+      chartInitialized = true;
+    }
+  }
+
+  // Draw Risk Chart
+  function drawChart() {
+    const votes = {{ result['file']['data']['attributes']['total_votes'] | tojson }};
+    const ctx = document.getElementById('riskChart').getContext('2d');
+
+    new Chart(ctx, {
+      type: 'bar',
+      data: {
+        labels: ['Malicious', 'Harmless', 'Suspicious', 'Undetected'],
+        datasets: [{
+          label: 'Vote Count',
+          data: [
+            votes.malicious || 0,
+            votes.harmless || 0,
+            votes.suspicious || 0,
+            votes.undetected || 0
+          ],
+          backgroundColor: ['#e74c3c', '#2ecc71', '#f1c40f', '#95a5a6']
+        }]
+      },
+      options: {
+        indexAxis: 'y',
+        responsive: true,
+        plugins: {
+          legend: { display: false },
+          title: {
+            display: true,
+            text: 'VirusTotal Risk Votes'
+          }
+        },
+        scales: {
+          x: {
+            beginAtZero: true
+          }
+        }
+      }
+    });
+  }
+</script>
+
+<style>
+  .collapsible-content {
+    display: none;
+    padding-top: 10px;
+  }
+  .collapsible-toggle.active + .collapsible-content {
+    display: block;
+  }
+</style>
+{% endblock %}
+

@@ -1,27 +1,98 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login</title>
-    <link rel="stylesheet" type="text/css" href="../static/style.css">
-</head>
-<body>
-    <div class="login-container">
-        <h1>Login</h1>
-        <form method="POST" class="login-form">
-            <label for="username">Username:</label>
-            <input type="text" name="username" placeholder="Enter your username" required><br>
+{% extends "base.html" %}
 
-            <label for="password">Password:</label>
-            <input type="password" name="password" placeholder="Enter your password" required><br>
+{% block title %}Login{% endblock %}
 
-            <button type="submit" class="login-btn">Login</button>
-        </form>
+{% block theme_toggle %}
+  <button class="theme-toggle" id="themeToggle">Toggle Dark Mode</button>
+{% endblock %}
 
-        {% if error %}
-            <p class="error-message">{{ error }}</p>
-        {% endif %}
-    </div>
-</body>
-</html>
+{% block content %}
+  <div class="login-container">
+    <h1>Welcome Back</h1>
+    <p class="description">Please sign in to continue.</p>
+
+<form method="POST" class="login-form">
+  {{ form.hidden_tag() }}
+
+  <label for="username">Username:</label>
+  {{ form.username(size=32) }}
+
+  <label for="password">Password:</label>
+  {{ form.password(size=32) }}
+
+  {{ form.submit(class="login-btn") }}
+
+  {% if error %}
+    <p class="error-message">{{ error }}</p>
+  {% endif %}
+</form>
+
+
+    {% if error %}
+      <p class="error-message">{{ error }}</p>
+    {% endif %}
+  </div>
+{% endblock %}
+
+{% block extra_styles %}
+<style>
+  body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    height: 100vh;
+    margin: 0;
+  }
+
+  .login-container {
+    width: 100%;
+    max-width: 400px;
+    padding: 30px;
+    background-color: var(--card-bg);
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    text-align: center;
+  }
+
+  .login-form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    margin-top: 20px;
+  }
+
+  .login-form input {
+    padding: 10px;
+    font-size: 16px;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    width: 100%;
+  }
+
+  .login-btn {
+    padding: 10px;
+    font-size: 16px;
+    border-radius: 6px;
+    background-color: #3498db;
+    color: white;
+    border: none;
+    cursor: pointer;
+  }
+
+  .login-btn:hover {
+    background-color: #2980b9;
+  }
+</style>
+{% endblock %}
+
+{% block scripts %}
+<script>
+  const toggleBtn = document.getElementById('themeToggle');
+  toggleBtn?.addEventListener('click', () => {
+    document.body.classList.toggle('dark-mode');
+    const theme = document.body.classList.contains('dark-mode') ? 'dark' : 'light';
+    localStorage.setItem('theme', theme);
+  });
+</script>
+{% endblock %}
